@@ -38,7 +38,8 @@ global.db = (sql, values = []) => {
 }
 
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + "/public"))
+app.use('/static', express.static(path.join(__dirname, 'website', 'public')))
+app.use(express.static(path.join(__dirname, 'website', 'public')));
 
 app.use(session({
     resave: false, // don't save session if unmodified
@@ -54,9 +55,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
-    res.render(`${__dirname}/views/index.ejs`);
-});
 
 app.listen(80, () => {
     console.log('Application listening on port 80!');
@@ -100,3 +98,11 @@ app.use(function (req, res, next) {
     if (msg) res.locals.message = msg;
     next();
 });
+
+app.get('/', (req, res) => {
+    res.render(path.join(__dirname, 'website', 'views', 'login.ejs'));
+})
+
+app.get('/register', (req, res) => {
+    res.render(path.join(__dirname, 'website', 'views', 'register.ejs'));
+})
