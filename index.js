@@ -129,6 +129,10 @@ app.get('/register', (req, res) => {
     res.render(path.join(__dirname, 'website', 'views', 'register.ejs'));
 })
 
+app.get('/dashboard', restrict, (req, res) => {
+    res.send(req.session.user)
+})
+
 app.post('/', async (req, res) => {
     let { email, ppw } = req.body;
 
@@ -136,7 +140,7 @@ app.post('/', async (req, res) => {
 
     if (user.length > 0) {
         req.session.user = user[0];
-        res.redirect('/menu');
+        res.redirect('/dashboard');
     }
     else {
         let error = `Utilizador ou password incorretos!`
