@@ -13,4 +13,5 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `turma` JSON NOT NULL DEFAULT ( JSON_ARRAY() ),
+  `perm` VARCHAR(45) NOT NULL DEFAULT 'aluno',
   PRIMARY KEY (`id`));

@@ -3,6 +3,6 @@
         "host": "localhost",
         "user": "root",
         "password": "root",
-        "database": "vdtdb"
+        "database": "vdt"
     }
 }

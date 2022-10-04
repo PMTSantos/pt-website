@@ -94,9 +94,31 @@ app.use(function (req, res, next) {
     delete req.session.error;
     delete req.session.success;
     res.locals.message = '';
-    if (err) res.locals.message = err;
-    if (msg) res.locals.message = msg;
+    if (err) res.locals.message = `
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h6><i class="fas fa-ban"></i><b> Erro!</b></h6>
+        ${err}
+    </div>`;
+
+    if (msg) res.locals.message = `
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6><i class="fas fa-check"></i><b> Sucesso!</b></h6>
+            ${msg}
+        </div>
+    `;
     next();
+});
+
+app.get('/logout', function (req, res) {
+    req.session.destroy(function () {
+        res.redirect('/');
+    });
 });
 
 app.get('/', (req, res) => {
@@ -105,4 +127,43 @@ app.get('/', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.render(path.join(__dirname, 'website', 'views', 'register.ejs'));
+})
+
+app.post('/', async (req, res) => {
+    let { email, ppw } = req.body;
+
+    let user = await global.db('SELECT * FROM users WHERE email = ? AND password = ?', [email, ppw]);
+
+    if (user.length > 0) {
+        req.session.user = user[0];
+        res.redirect('/menu');
+    }
+    else {
+        let error = `Utilizador ou password incorretos!`
+        req.session.error = error;
+        res.redirect('/');
+    }
+})
+
+app.post('/register', async (req, res) => {
+    let { username, email, password, ppwVerify } = req.body;
+
+    let user = await global.db('SELECT * FROM users WHERE email = ?', [email]);
+
+    if (user.length > 0) {
+        let error = `Enderço de email em uso!`
+        req.session.error = error;
+        res.redirect('/register');
+    }
+    else if (password !== ppwVerify) {
+        let error = `As passwords não coincidem!`
+        req.session.error = error;
+        res.redirect('/register');
+    }
+    else {
+        await global.db('INSERT INTO users (username, email, password, perms) VALUES (?, ?, ?, "aluno")', [username, email, password]);
+        let success = `Utilizador criado com sucesso!`
+        req.session.success = success;
+        res.redirect('/');
+    }
 })
