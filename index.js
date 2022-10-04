@@ -28,6 +28,15 @@ TTTTTT  T:::::T  TTTTTTG:::::G       GGGGGG  E:::::E       EEEEEE  I::::I  O::::
 
 console.log(TGEIO)
 
+global.db = (sql, values = []) => {
+    return new Promise((resolve, reject) => {
+        con(sql, values, (err, result) => {
+            if (err) reject(err)
+            resolve(result)
+        })
+    })
+}
+
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"))
 
