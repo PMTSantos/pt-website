@@ -1,23 +1,32 @@
-content above tabbed region.
 # pt-website
 
-tab content INSTALAÇÂO
 
 ## INSTALAÇÃO
 
-1º - INSTALAR node.js (https://nodejs.dev/en/)
+1.  Instalar [NODE.JS](https://nodejs.dev/en/)
 
-2º - INSTALAR mysql (https://dev.mysql.com/downloads/installer/)
+2.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)
 
-3º - No CMD executar os seguintes comandos:<br>
-1º - npm install express <br>
-2º - npm install ejs <br>
-3º - npm install mysql2
+3.  No CMD executar os seguintes comandos:<br>
+     -  ```npm install express``` <br>
+     -  ```npm install ejs``` <br>
+     -  ```npm install mysql2```
 
-4º - Abrir o diretorio do site no cmd e executar o seguinte comando
-    1º - node index.js
+4.  Abrir o diretorio do site no cmd e executar o seguinte comando <br>
+     -  ```node index.js```
 
-tab content OBJETIVO
+## PROGRESSO
+
+- [x] Login Funcional
+- [ ] Dashboard Completa
+- [ ] Conteudos Adicionados
+- [ ] Testes Realizados
+- [ ] Publicar Site
+
 ## OBJETIVO
 
 AINDA A PENSAR NUM TEXTO BONITO
+
+# EQUIPA
+
+TGEIO 20
