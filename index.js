@@ -64,12 +64,9 @@ function authRole(role) {
     return (req, res, next) => {
         if (req.session.user.perm !== role) {
             res.status(403);
-            let error = `<div class="error-msg" style="margin-left:33%;">
-            <i class="fa fa-times-circle"></i>
-            Acesso negado!
-          </div>`
+            let error = `Acesso negado!`
             //req.session.error = error;
-            return res.redirect('/menu')
+            return res.redirect('/dashboard');
         }
         next();
     }
@@ -79,12 +76,9 @@ function restrict(req, res, next) {
     if (req.session.user) {
         next();
     } else {
-        let error = `<div class="error-msg" style="margin-left:33%;">
-            <i class="fa fa-times-circle"></i>
-            Acesso negado!
-          </div>`
+        let error = `Acesso negado!`
         req.session.error = error;
-        res.redirect('/login');
+        res.redirect('/');
     }
 }
 
@@ -130,7 +124,7 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/dashboard', restrict, (req, res) => {
-    res.send(req.session.user)
+    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'));
 })
 
 app.post('/', async (req, res) => {
