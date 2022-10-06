@@ -7,10 +7,8 @@
 
 2.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)
 
-3.  No CMD executar os seguintes comandos:<br>
-     -  ```npm install express``` <br>
-     -  ```npm install ejs``` <br>
-     -  ```npm install mysql2```
+3.  No CMD executar o seguinte comando:<br>
+     -  ```npm install body-parser ejs express express-session mysql2 path``` 
 
 4.  Abrir o diretorio do site no cmd e executar o seguinte comando <br>
      -  ```node index.js```
