@@ -112,12 +112,35 @@ app.use(function (req, res, next) {
 
 app.get('/logout', function (req, res) {
     req.session.destroy(function () {
-        res.redirect('/');
+        res.redirect(`/?info=`+ encodeURIComponent('Sessão terminada com sucesso'));
     });
 });
 
 app.get('/', (req, res) => {
-    res.render(path.join(__dirname, 'website', 'views', 'login.ejs'));
+    let st;
+    let query = req.query
+
+    if (query.info) st = `
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6><i class="fas fa-check"></i><b> Sucesso!</b></h6>
+                 ${query.info}
+            </div>
+    `
+
+    if (query.error) st = `
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h6><i class="fas fa-ban"></i><b> Erro!</b></h6>
+            ${query.error}
+        </div>`
+    
+    else if (query.error) st = `<div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>${query.error}</div>`
+    res.render(path.join(__dirname, 'website', 'views', 'login.ejs'), {st});
 })
 
 app.get('/register', (req, res) => {
@@ -125,7 +148,7 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/dashboard', restrict, (req, res) => {
-    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'), {user: req.session.user});
+    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'), { user: req.session.user });
 })
 
 app.post('/', async (req, res) => {
