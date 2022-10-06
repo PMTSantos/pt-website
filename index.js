@@ -48,7 +48,7 @@ app.use(session({
     secret: 's%3Al3ozSdvQ83TtC5RvJ.CibaQoHtaY0H3QOB1kqR8H2A',
     cookie: {
 
-        expires: 300000
+        expires: 3600000
     }
 }));
 app.use(bodyParser.urlencoded({ extended: false }))
