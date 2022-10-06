@@ -1,9 +1,10 @@
 const path = require('path');
 const express = require('express');
 var session = require('express-session');
-const ejs = require('ejs');
+require('ejs');
 var bodyParser = require('body-parser')
 const con = require("./handlers/mysql.js")
+require('./handlers/anticrash.js')();
 
 const app = express();
 
