@@ -166,6 +166,6 @@ app.post('/register', async (req, res) => {
     }
 })
 
-app.use('/admin', authRole('admin'), require('./routes/admin'));
-app.use('/teacher', authRole('teacher'), require('./routes/teacher'));
-app.use('/aluno', authRole('aluno'), require('./routes/aluno'));
+app.use('/admin', authRole('admin'), require('./website/routes/admin'));
+app.use('/teacher', authRole('teacher'), require('./website/routes/teacher'));
+app.use('/aluno', authRole('aluno'), require('./website/routes/user'));
