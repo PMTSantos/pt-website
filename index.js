@@ -124,7 +124,7 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/dashboard', restrict, (req, res) => {
-    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'));
+    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'), {user: req.session.user});
 })
 
 app.post('/', async (req, res) => {
@@ -165,3 +165,7 @@ app.post('/register', async (req, res) => {
         res.redirect('/');
     }
 })
+
+app.use('/admin', authRole('admin'), require('./routes/admin'));
+app.use('/teacher', authRole('teacher'), require('./routes/teacher'));
+app.use('/aluno', authRole('aluno'), require('./routes/aluno'));
