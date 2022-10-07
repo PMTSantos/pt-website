@@ -63,7 +63,7 @@ app.listen(80, () => {
 
 function authRole(role) {
     return (req, res, next) => {
-        if (req.session.user.perm !== role) {
+        if (req.session.user.perms !== role) {
             res.status(403);
             let error = `Acesso negado!`
             //req.session.error = error;
@@ -190,6 +190,6 @@ app.post('/register', async (req, res) => {
     }
 })
 
-app.use('/admin', authRole('admin'), require('./website/routes/admin'));
-app.use('/teacher', authRole('teacher'), require('./website/routes/teacher'));
-app.use('/aluno', authRole('aluno'), require('./website/routes/user'));
+app.use('/admin', restrict, authRole('admin'), require('./website/routes/admin'));
+app.use('/teacher', restrict, authRole('teacher'), require('./website/routes/teacher'));
+app.use('/aluno', restrict, authRole('aluno'), require('./website/routes/user'));

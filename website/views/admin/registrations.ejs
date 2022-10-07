@@ -1,0 +1,129 @@
+<%- include('../main.ejs')  %> 
+
+<link href="/static/dash/vendor/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css">
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Utilizadores Pendentes</h6>
+      </div>
+      <div class="table-responsive p-3">
+        <% if(data.length > 0) { %> 
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <thead class="thead-light">
+            <tr>
+              <th>Nome de Utilizador</th>
+              <th>Email</th>
+              <th>Estado</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+                <th>Nome de Utilizador</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Ações</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <%data.forEach(user => { %>
+                <tr>
+                    <td><%= user.username %></td>
+                    <td><%= user.email %></td>
+                    <td><span class="badge badge-warning">Pendente</span></td>
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="id" value="<%= user.id %>">
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#aproveModal" id="#myBtn" data-userid="<%= user.id %>">
+                                Aprovar
+                            </button>
+                            <button type="submit" class="btn btn-danger btn-sm" name="action" value="reject">Rejeitar</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+            <p>Não existem dados para mostrar</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="aproveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Aprovar Utilizador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="userID" value="">
+                <div class="modal-body">
+                    <p>Selecione as permissões e a(s) turmas do utilizador</p>
+                    <div class="form-group">
+                        <label for="select2Single">Permissões:</label>
+                        <select class="select2-single form-control" name="perm" id="select2Single" required>
+                            <option value="admin">Administrador</option>
+                            <option value="professor">Professor</option>
+                            <option value="aluno" selected>Aluno</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Multiple">Turmas:</label>
+                        <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %> required>
+                            <% turmas.forEach(turma => { %>
+                                <option value="<%= turma.turma %>"><%= turma.nome %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="accept" class="btn btn-primary">Aprovar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../footer.ejs')  %> 
+
+<script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="/static/dash/vendor/select2/dist/js/select2.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script>
+$(document).ready(function () {
+    $('#select2Single').select2({
+        placeholder: "Selecione a Permissão",
+        allowClear: true,
+        width: '100%'
+      });
+    $('#select2Multiple').select2({
+        placeholder: `<%- (turmas.length == 0) ? "Não existe nenhuma turma" : "Selecione a(s) Turma(s)" %>`,
+        allowClear: true,
+        multiple: true,
+        width: '100%'
+      });
+      //
+    $('#dataTable').DataTable(); // ID From dataTable 
+    $('#dataTableHover').DataTable(); // ID From dataTable with Hover
+    //
+    $('#aproveModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('userid') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+        modal.find('#userID').val(recipient)
+    })
+});
+
+</script>

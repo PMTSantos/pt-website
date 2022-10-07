@@ -12,6 +12,7 @@
     <link href="/static/dash/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="/static/dash/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/static/dash/css/ruang-admin.min.css" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
 </head>
 
 <body id="page-top">
@@ -36,9 +37,21 @@
                     Administrador
                 </div>
                 <li class="nav-item">
-                    <a class="nav-link" href="ui-colors.html">
+                    <a class="nav-link" href="/admin/students">
                         <i class='fas fa-user-cog'></i>
                         <span>Gerir Alunos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/classes">
+                        <i class='fa fa-group'></i>
+                        <span>Gerir Turmas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/registrations">
+                        <i class='fas fa-clipboard'></i>
+                        <span>Gerir Inscrições</span>
                     </a>
                 </li>
                 <hr class="sidebar-divider">
@@ -119,7 +132,9 @@
                 </nav>
                 <!-- Topbar -->
 
-                <!-- breadcrumb-->
+                <%- message  %> 
+
+                <!-- breadcrumb
                 <div class="container-fluid" id="container-wrapper">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
@@ -129,4 +144,4 @@
                             <li class="breadcrumb-item active" aria-current="page">Blank Page</li>
                         </ol>
                     </div>
-                    <!-- breadcrumb-->
+                     breadcrumb-->
