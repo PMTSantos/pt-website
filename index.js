@@ -157,8 +157,12 @@ app.post('/', async (req, res) => {
     let user = await global.db('SELECT * FROM users WHERE email = ? AND password = ?', [email, ppw]);
 
     if (user.length > 0) {
+        if(user[0].active == '1') {
         req.session.user = user[0];
         res.redirect('/dashboard');
+        } else {
+            res.redirect(`/?error=`+ encodeURIComponent('Conta Pendente para Aprovação!'));
+        }
     }
     else {
         let error = `Utilizador ou password incorretos!`
