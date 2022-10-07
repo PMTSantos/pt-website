@@ -183,8 +183,8 @@ app.post('/register', async (req, res) => {
         res.redirect('/register');
     }
     else {
-        await global.db('INSERT INTO users (username, email, password, perms) VALUES (?, ?, ?, "aluno")', [username, email, password]);
-        let success = `Utilizador criado com sucesso!`
+        await global.db('INSERT INTO users (username, email, password, perms, active) VALUES (?, ?, ?, "aluno", false)', [username, email, password]);
+        let success = `Utilizador criado com sucesso! Aguarde que um administrador aprove a conta!`
         req.session.success = success;
         res.redirect('/');
     }
