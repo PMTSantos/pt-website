@@ -1,5 +1,12 @@
 # DESCONTINUADO POR AGORA
-# pt-website
+<br />
+<div align="center">
+  <a href="https://github.com/PMTSantos/pt-website/tree/main/img/VALDOTXUBA.png">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">PT-WebSite</h3>
+</div>
 
 
 ## INSTALAÇÃO
