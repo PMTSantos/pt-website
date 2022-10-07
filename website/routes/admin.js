@@ -11,11 +11,48 @@ router.get('/students/:id', async (req, res) => {
 })
 
 router.get('/classes', async (req, res) => {
+    var sql = `SELECT * FROM turmas`
+    var data = await global.db(sql)
 
+    res.render(path.join(__dirname, '..', 'views', 'admin', 'classes.ejs'), { data, user: req.session.user })
 })
 
-router.get('/classes/:id', async (req, res) => {
+router.post('/classes', async (req, res) => {
+    var { action } = req.body
 
+    if(action == 'delete'){
+        var { id } = req.body
+        var sql = `DELETE FROM turmas WHERE turma = ?`
+        await global.db(sql, [id])
+
+        req.session.success = 'Turma apagada com sucesso!'
+
+    } else if(action == 'update'){
+
+        var { id, nome, contents } = req.body
+        var sql = `UPDATE turmas SET nome = ?, conteudos = ? WHERE turma = ?`
+        await global.db(sql, [nome, String(contents), id])
+
+        req.session.success = 'Turma atualizada com sucesso!'
+
+    } else if(action == 'add'){
+
+        var { turma, nome, contents } = req.body
+        
+        var test = await global.db(`SELECT * FROM turmas WHERE turma = ?`, [turma])
+        if(test.length > 0){
+            req.session.error = 'Já existe uma turma com esse nome!'
+            return res.redirect('/admin/classes')
+        }
+
+        var sql = `INSERT INTO turmas (turma, nome, conteudos) VALUES (?, ?, ?)`
+        await global.db(sql, [turma, nome, String(contents)])
+
+        req.session.success = 'Turma criada com sucesso!'
+
+    }
+
+    res.redirect('/admin/classes')
 })
 
 router.get('/registrations', async (req, res) => {

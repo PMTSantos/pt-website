@@ -1,0 +1,151 @@
+<%- include('../main.ejs')  %> 
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#classModalNew">
+            Adicionar Turma
+        </button>
+    </div>
+</div>
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Turmas</h6>
+      </div>
+      <div class="table-responsive p-3">
+        <% if(data.length > 0) { %> 
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <thead class="thead-light">
+            <tr>
+              <th>Turma</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>Turma</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <%data.forEach(turma => { %>
+                <tr>
+                    <td><%= turma.turma %></td>
+                    <td><%= turma.nome %></td>
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="id" value="<%= turma.turma %>">
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#classModalUpdate" id="#myBtn" data-turma="<%= turma.turma %>" data-nome="<%= turma.nome %>" data-conteudos="<%= turma.conteudos %>">
+                                Editar
+                            </button>
+                            <button type="submit" class="btn btn-danger btn-sm" name="action" value="delete">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+            <p>Não existem dados para mostrar</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="classModalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Turma</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="turmaID" value="new">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="select2Single">ID da Turma:</label>
+                        <input type="text" class="form-control" name="turma" id="turmaTurma" placeholder="ID Turma" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Single">Nome da Turma:</label>
+                        <input type="text" class="form-control" name="nome" id="turmaNome" placeholder="Nome Turma" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Single">Conteúdos:</label>
+                        <textarea class="form-control" name="contents" id="turmaContent" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="update" class="btn btn-primary">Atualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="classModalNew" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Turma</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="select2Single">ID da Turma:</label>
+                        <input type="text" class="form-control" name="turma" id="turmaTurma" placeholder="ID Turma" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Single">Nome da Turma:</label>
+                        <input type="text" class="form-control" name="nome" id="turmaNome" placeholder="Nome Turma" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Single">Conteúdos:</label>
+                        <textarea class="form-control" name="contents" id="turmaContent" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="add" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../footer.ejs')  %> 
+
+<script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script>
+    $(document).ready(function () {
+        //
+        $('#dataTableHover').DataTable(); // ID From dataTable with Hover
+        //
+        $('#classModalUpdate').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+
+            var turma = button.data('turma')
+            var nome = button.data('nome')
+            var conteudos = button.data('conteudos')
+        
+            var modal = $(this)
+                modal.find('#turmaTurma').val(turma)
+                modal.find('#turmaID').val(turma)
+                modal.find('#turmaNome').val(nome)
+                modal.find('#turmaContent').val(conteudos)
+    })
+});
+</script>
