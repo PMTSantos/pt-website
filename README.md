@@ -2,24 +2,37 @@
 <br />
 <div align="center">
   <a href="https://github.com/PMTSantos/pt-website/tree/main">
-    <img src="img/VALDOTXUBA.png" alt="Logo" width="80" height="80">
+    <img src="img/VALDOTXUBA.png" alt="Logo" width="140" height="140">
   </a>
 
   <h3 align="center">PT-WebSite</h3>
 </div>
 
+## INSTALAÇÃO DB
 
-## INSTALAÇÃO
+1.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)    <br>
+2.  No Mysql Command Line Client digite os seguintes comandos <br>
+    ```sh
+    CREATE DATABASE vdt;
+    ```
+    ```sh
+    SOURCE (DIRETORIO)\database.sql
+    ```
+
+
+## INSTALAÇÃO SITE
 
 1.  Instalar [NODE.JS](https://nodejs.dev/en/)
 
-2.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)
+2.  No CMD executar o seguinte comando:<br>
+      ```sh
+      npm install body-parser ejs express express-session mysql2 path
+      ``` 
 
-3.  No CMD executar o seguinte comando:<br>
-     -  ```npm install body-parser ejs express express-session mysql2 path``` 
-
-4.  Abrir o diretorio do site no cmd e executar o seguinte comando <br>
-     -  ```node index.js```
+3.  Abrir o diretorio do site no cmd e executar o seguinte comando <br>
+       ```sh
+       node index.js
+       ```
 
 ## PROGRESSO
 
