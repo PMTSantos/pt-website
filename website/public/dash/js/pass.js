@@ -47,13 +47,17 @@ function checkMatch() {
     let confirm = document.getElementById("2").value;
     let tamanhoBar = Object.values(parametros).filter(value=>value);
     
-    if(password == confirm && tamanhoBar.length == 4){
+    if(password == confirm){
         document.getElementById("textVerify").innerText = "";
-        document.getElementById("btnSubmit").disabled = false;
+        if(tamanhoBar.length == 4) {
+            document.getElementById("btnSubmit").disabled = false;
+            document.getElementById("btnSubmit").type = "submit";
+        }
 
     }else{
         document.getElementById("textVerify").innerText = "As passwords não coincidem";
         document.getElementById("btnSubmit").disabled = true;
+        document.getElementById("btnSubmit").type = "button";
      
     }
 }
