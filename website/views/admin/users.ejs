@@ -31,7 +31,8 @@
                 <tr>
                     <td><%= user.username %></td>
                     <td><%= user.email %></td>
-                    <td><span class="badge badge-<%= (user.perms == "admin")? "primary": (user.perms == "professor")? "info" : "success" %> "><%= user.perms.toUpperCase()  %> </span></td>
+                    <td><span class="badge badge-<%= (user.perms == "admin")? "primary": (user.perms == "professor")? "info" : "success" %> ">
+                        <%= (user.perms == "admin")? "ADMINISTRADOR": (user.perms == "professor")? "PROFESSOR" : "ALUNO" %> </span></td>
                     <td>
                         <form method="post">
                             <input type="hidden" name="id" value="<%= user.id %>">
@@ -117,11 +118,11 @@
             <form method="post">
                 <input type="hidden" name="id" id="userID"  value="">
                <div class="modal-body">
-                    <p>Tem a certeza que quer eliminar o <span id="perms"></span> <span id="username"></span> </p>
+                    <p>Tem a certeza que quer eliminar o/a <span id="perms"></span> <span id="username"></span> </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" name="action" value="delete" class="btn btn-primary">Eliminar</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-danger">Eliminar</button>
                 </div>
             </form>
         </div>
@@ -189,9 +190,9 @@ $(document).ready(function () {
         var recipient = button.data('userid');
         var username = button.data('username');
         var perms = button.data('perms');
-        if(perms == "admin") perms="Administrador"
-        else if(perms == "professor") perms ="Professor"
-        else if(perms == "aluno") perms = "Aluno"
+        if(perms == "admin") perms="Administrador(a)"
+        else if(perms == "professor") perms ="Professor(a)"
+        else if(perms == "aluno") perms = "Aluno(a)"
         var modal = $(this)
             modal.find('#userID').val(recipient)
             modal.find('#username').text(username)

@@ -58,7 +58,7 @@ router.post('/classes', async (req, res) => {
     } else if (action == 'update') {
 
         var { id, nome, contents } = req.body
-        var sql = `UPDATE turmas SET nome = ?, conteudos = ? WHERE turma = ?`
+        var sql = `UPDATE modulos SET nome = ?, conteudos = ? WHERE turma = ?`
         await global.db(sql, [nome, String(contents), id])
 
         req.session.success = 'Turma atualizada com sucesso!'
@@ -73,7 +73,7 @@ router.post('/classes', async (req, res) => {
             return res.redirect('/admin/classes')
         }
 
-        var sql = `INSERT INTO turmas (turma, nome, conteudos) VALUES (?, ?, ?)`
+        var sql = `INSERT INTO modulos (turma, nome, conteudos) VALUES (?, ?, ?)`
         await global.db(sql, [turma, nome, String(contents)])
 
         req.session.success = 'Turma criada com sucesso!'
