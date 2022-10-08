@@ -16,3 +16,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `perms` VARCHAR(45) NOT NULL DEFAULT 'aluno',
   `active` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`));
+
+CREATE TABLE `module_content` (
+	`id` BIGINT(19) NOT NULL AUTO_INCREMENT,
+	`module` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	`content_title` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
+	`content` LONGTEXT NOT NULL COLLATE 'utf8mb3_general_ci',
+	`position` INT(10) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `module` (`module`) USING BTREE,
+	CONSTRAINT `module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)

@@ -51,11 +51,11 @@ app.use(session({
         expires: 3600000
     }
 }));
-app.use(bodyParser.urlencoded({ extended: false }))
+//app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
-app.use(bodyParser.json())
-
+app.use(express.json({limit: '100mb'}));
+app.use(express.urlencoded({limit: '100mb', extended:false}));
 
 app.listen(80, () => {
     console.log('Application listening on port 80!');
@@ -63,7 +63,7 @@ app.listen(80, () => {
 
 function authRole(role) {
     return (req, res, next) => {
-        if (req.session.user.perms !== role) {
+        if (req.session.user.perms !== role && req.session.user.perms !== 'admin') {
             res.status(403);
             let error = `Acesso negado!`
             //req.session.error = error;
@@ -195,5 +195,5 @@ app.post('/register', async (req, res) => {
 })
 
 app.use('/admin', restrict, authRole('admin'), require('./website/routes/admin'));
-app.use('/teacher', restrict, authRole('teacher'), require('./website/routes/teacher'));
+app.use('/prof', restrict, authRole('professor'), require('./website/routes/teacher'));
 app.use('/aluno', restrict, authRole('aluno'), require('./website/routes/user'));
