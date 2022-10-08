@@ -6,7 +6,7 @@ router.get('/students', async (req, res) => {
     var sql = "SELECT * FROM users WHERE active = 1"
     let data = await global.db(sql)
 
-    var sql = `SELECT * FROM turmas`
+    var sql = `SELECT * FROM modulos`
     let turmas = await global.db(sql)
 
     return res.render(path.join(__dirname, '..', 'views', 'admin', 'users.ejs'), { data, user: req.session.user, turmas })
@@ -39,7 +39,7 @@ router.post('/students', async (req, res) => {
 })
 
 router.get('/classes', async (req, res) => {
-    var sql = `SELECT * FROM turmas`
+    var sql = `SELECT * FROM modulos`
     var data = await global.db(sql)
 
     res.render(path.join(__dirname, '..', 'views', 'admin', 'classes.ejs'), { data, user: req.session.user })
@@ -50,7 +50,7 @@ router.post('/classes', async (req, res) => {
 
     if (action == 'delete') {
         var { id } = req.body
-        var sql = `DELETE FROM turmas WHERE turma = ?`
+        var sql = `DELETE FROM modulos WHERE turma = ?`
         await global.db(sql, [id])
 
         req.session.success = 'Turma apagada com sucesso!'
@@ -67,7 +67,7 @@ router.post('/classes', async (req, res) => {
 
         var { turma, nome, contents } = req.body
 
-        var test = await global.db(`SELECT * FROM turmas WHERE turma = ?`, [turma])
+        var test = await global.db(`SELECT * FROM modulos WHERE turma = ?`, [turma])
         if (test.length > 0) {
             req.session.error = 'Já existe uma turma com esse nome!'
             return res.redirect('/admin/classes')
@@ -87,7 +87,7 @@ router.get('/registrations', async (req, res) => {
     var sql = `SELECT * FROM users WHERE active = 0`
     let data = await global.db(sql)
 
-    var sql = `SELECT * FROM turmas`
+    var sql = `SELECT * FROM modulos`
     let turmas = await global.db(sql)
 
     return res.render(path.join(__dirname, '..', 'views', 'admin', 'registrations.ejs'), { data, user: req.session.user, turmas })

@@ -88,7 +88,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="select2Multiple">Turmas:</label>
+                        <label for="select2Multiple">Módulos:</label>
                         <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %>>
                             <% turmas.forEach(turma => {%>
                                 <option value="<%= turma.turma %>"><%= turma.turma %></option>
@@ -143,7 +143,7 @@ $(document).ready(function () {
         width: '100%'
       });
     $('#select2Multiple').select2({
-        placeholder: `<%- (turmas.length == 0) ? "Não existe nenhuma turma" : "Selecione a(s) Turma(s)" %>`,
+        placeholder: `<%- (turmas.length == 0) ? "Não existe nenhum módulo" : "Selecione o(s) módulo(s)" %>`,
         allowClear: true,
         multiple: true,
         width: '100%'
@@ -159,12 +159,15 @@ $(document).ready(function () {
     $('#aproveModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var recipient = button.data('userid');
-    var turma = button.data('turma').split(',') || [];
+    var turma = button.data('turma')
     var perms = button.data('perms');
 
     var username = button.data('username');
     var email = button.data('email');
     var password = button.data('password');
+
+    if(turma.match(/[,]/g)) turma = turma.split(/[,]/g);
+    else turma = [turma];
 
     let arr = []
     arr.push(perms)

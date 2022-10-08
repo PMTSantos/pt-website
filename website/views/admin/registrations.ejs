@@ -65,7 +65,7 @@
             <form method="post">
                 <input type="hidden" name="id" id="userID" value="">
                 <div class="modal-body">
-                    <p>Selecione as permissões e a(s) turmas do utilizador</p>
+                    <p>Selecione as permissões e o(s) módulos do utilizador</p>
                     <div class="form-group">
                         <label for="select2Single">Permissões:</label>
                         <select class="select2-single form-control" name="perm" id="select2Single" required>
@@ -75,7 +75,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="select2Multiple">Turmas:</label>
+                        <label for="select2Multiple">Módulos:</label>
                         <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %>>
                             <% turmas.forEach(turma => { %>
                                 <option value="<%= turma.turma %>"><%= turma.nome %></option>
@@ -107,7 +107,7 @@ $(document).ready(function () {
         width: '100%'
       });
     $('#select2Multiple').select2({
-        placeholder: `<%- (turmas.length == 0) ? "Não existe nenhuma turma" : "Selecione a(s) Turma(s)" %>`,
+        placeholder: `<%- (turmas.length == 0) ? "Não existe nenhum módulo" : "Selecione o(s) Módulo(s)" %>`,
         allowClear: true,
         multiple: true,
         width: '100%'
