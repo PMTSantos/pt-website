@@ -23,8 +23,13 @@ router.post('/students', async (req, res) => {
         req.session.success = 'Utilizador eliminado com sucesso!'
     } else if (action == 'edit') {
         let { id, username, email, turmas, password, perms } = req.body
+
+        let arr = []
+        if(!Array.isArray(turmas)) arr.push(turmas)
+        else arr = turmas
+
         var sql = `UPDATE users SET username = ?, password = ?, email = ?, turma = ?, perms = ? WHERE id = ?`
-        await global.db(sql, [username, password, email, (JSON.stringify(turmas) || "[]"), perms, id])
+        await global.db(sql, [username, password, email, (JSON.stringify(arr) || "[]"), perms, id])
 
         req.session.success = 'Utilizador editado com sucesso!'
     }
@@ -95,8 +100,12 @@ router.post('/registrations', async (req, res) => {
 
         let { perm, turmas } = req.body
 
+        let arr = []
+        if(!Array.isArray(turmas)) arr.push(turmas)
+        else arr = turmas
+
         var sql = `UPDATE users SET active = 1, perms = ?, turma = ? WHERE id = ?`
-        await global.db(sql, [perm, (JSON.stringify(turmas) || '[]'), id])
+        await global.db(sql, [perm, (JSON.stringify(arr) || '[]'), id])
 
         req.session.success = `Utilizador aprovado com sucesso!`
         return res.redirect('/admin/registrations')
