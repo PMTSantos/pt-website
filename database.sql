@@ -33,6 +33,7 @@ CREATE TABLE `module_evaluations` (
 	`module` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
 	`question` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb3_general_ci',
 	`answers` JSON NOT NULL,
+	`correct` JSON NULL DEFAULT NULL,
 	`level` INT(10) NULL DEFAULT NULL,
 	PRIMARY KEY (`id`) USING BTREE,
 	INDEX `module` (`module`) USING BTREE,
