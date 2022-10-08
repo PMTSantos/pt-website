@@ -149,8 +149,12 @@ $(document).ready(function () {
         width: '100%'
       });
       //
-    $('#dataTable').DataTable(); // ID From dataTable 
-    $('#dataTableHover').DataTable(); // ID From dataTable with Hover
+
+    $('#dataTableHover').DataTable({
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+        },
+    }); // ID From dataTable with Hover
     //
     $('#aproveModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
