@@ -36,13 +36,10 @@
                     <td><%= turma.turma %></td>
                     <td><%= turma.nome %></td>
                     <td>
-                        <form method="post">
-                            <input type="hidden" name="id" value="<%= turma.turma %>">
-                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#classModalUpdate" id="#myBtn" data-turma="<%= turma.turma %>" data-nome="<%= turma.nome %>" data-conteudos="<%= turma.conteudos %>">
-                                Editar
-                            </button>
-                            <button type="submit" class="btn btn-danger btn-sm" name="action" value="delete">Eliminar</button>
-                        </form>
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#classModalUpdate" id="#myBtn" data-turma="<%= turma.turma %>" data-nome="<%= turma.nome %>" data-conteudos="<%= turma.conteudos %>">
+                            Editar
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" name="action" data-target="#deleteModulo" data-toggle="modal" value="delete" data-turma="<%= turma.turma %>" data-nome="<%= turma.nome %>">Eliminar</button>
                     </td>
                 </tr>
             <% }) %>
@@ -74,7 +71,7 @@
                     </div>
                     <div class="form-group">
                         <label for="select2Single">Nome do Módulo:</label>
-                        <input type="text" class="form-control" name="nome" id="turmaNome" placeholder="Nome Turma" value="">
+                        <input type="text" class="form-control" name="nome" id="turmaNome" placeholder="Nome Módulo" value="">
                     </div>
                     <div class="form-group">
                         <label for="select2Single">Conteúdos do Módulo:</label>
@@ -107,7 +104,7 @@
                     </div>
                     <div class="form-group">
                         <label for="select2Single">Nome do Módulo:</label>
-                        <input type="text" class="form-control" name="nome" id="turmaNome" placeholder="Nome Turma" value="">
+                        <input type="text" class="form-control" name="nome" id="turmaNome" placeholder="Nome do Módulo" value="">
                     </div>
                     <div class="form-group">
                         <label for="select2Single">Conteúdos do Módulo:</label>
@@ -117,6 +114,29 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" name="action" value="add" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModulo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Módulo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="turmaID"  value="">
+               <div class="modal-body">
+                    <p>Tem a certeza que quer eliminar o módulo <span id="turma"></span> (<span id="nome"></span>) </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-danger">Eliminar</button>
                 </div>
             </form>
         </div>
@@ -150,6 +170,17 @@
                 modal.find('#turmaID').val(turma)
                 modal.find('#turmaNome').val(nome)
                 modal.find('#turmaContent').val(conteudos)
+    })
+
+    $('#deleteModulo').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var turma = button.data('turma')
+        var nome = button.data('nome')
+        var modal = $(this)
+            modal.find('#turmaID').val(turma)
+            modal.find('#turma').text(turma)
+            modal.find('#nome').text(nome)
+            
     })
 });
 </script>

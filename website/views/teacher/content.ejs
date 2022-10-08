@@ -41,7 +41,7 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateContent" data-id="<%= turma.id %>" data-title="<%= turma.content_title %>" data-content="<%= turma.content %>" data-position="<%= turma.position%>">
                             Editar
                         </button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteContent" data-id="<%= turma.id %>">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteContent" data-id="<%= turma.id %>" data-title="<%= turma.content_title %>"  data-module="<%= turma.module %>">
                             Eliminar
                         </button>
                     </td>
@@ -141,11 +141,11 @@
             <form method="post">
                 <input type="hidden" name="id" id="userID" value="">
                 <div class="modal-body">
-                    <p>Tem a certeza que quer eliminar o Conteúdo?</p>
+                    <p>Tem a certeza que quer eliminar este Conteúdo? (<span id="title"></span>) de <span id="module"></span></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" name="action" value="delete" class="btn btn-primary">Eliminar</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-danger">Eliminar</button>
                 </div>
             </form>
         </div>
@@ -173,9 +173,13 @@
         $('#deleteContent').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('id');
+            var title = button.data('title');
+            var module = button.data('module')
 
             var modal = $(this)
                 modal.find('#userID').val(recipient)
+                modal.find('#title').text(title)
+                modal.find('#module').text(module)
         })
 
         $('#updateContent').on('show.bs.modal', function (event) {
