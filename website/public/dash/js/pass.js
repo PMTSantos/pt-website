@@ -16,8 +16,6 @@ function strengthChecker(){
 
   let tamanhoBar = Object.values(parametros).filter(value=>value);
 
-  console.log(Object.values(parametros), tamanhoBar);
-
   BarraSeg.innerHTML = "";
   for( let i in tamanhoBar){
       let span = document.createElement("span");
@@ -44,3 +42,18 @@ function strengthChecker(){
   }
 }
 
+function checkMatch() {
+    let password = document.getElementById("password").value;
+    let confirm = document.getElementById("2").value;
+    let tamanhoBar = Object.values(parametros).filter(value=>value);
+    
+    if(password == confirm && tamanhoBar.length == 4){
+        document.getElementById("textVerify").innerText = "";
+        document.getElementById("btnSubmit").disabled = false;
+
+    }else{
+        document.getElementById("textVerify").innerText = "As passwords não coincidem";
+        document.getElementById("btnSubmit").disabled = true;
+     
+    }
+}

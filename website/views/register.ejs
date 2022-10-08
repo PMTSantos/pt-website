@@ -50,11 +50,11 @@
                       <div class="form-group">
                         <label>Repita a password</label>
                         <input name="ppwVerify" type="password" class="form-control" id="2"
-                          placeholder="Repetir Password">
-                        <label id="textVerify"></label>
+                          placeholder="Repetir Password" oninput="checkMatch()">
+                        <span id="textVerify"></span>
                       </div>
                       <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Registar</button>
+                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-block" disabled>Registar</button>
                       </div>
 
                     </form>
