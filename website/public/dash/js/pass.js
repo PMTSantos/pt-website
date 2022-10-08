@@ -40,6 +40,7 @@ function strengthChecker(){
               break;
       }
   }
+  checkMatch()
 }
 
 function checkMatch() {

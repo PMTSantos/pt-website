@@ -3,10 +3,33 @@ const router = express.Router()
 const path = require('path')
 
 router.get('/students', async (req, res) => {
+    var sql = "SELECT * FROM users"
+    let data = await global.db(sql)
 
+    var sql = `SELECT * FROM turmas`
+    let turmas = await global.db(sql)
+
+    return res.render(path.join(__dirname, '..', 'views', 'admin', 'users.ejs'), { data, user: req.session.user, turmas })
 })
 
-router.get('/students/:id', async (req, res) => {
+router.post('/students', async (req, res) => {
+    let { action } = req.body
+
+    if (action == 'delete') {
+        let { id } = req.body
+        var sql = `DELETE FROM users WHERE id = ${id}`
+        await global.db(sql)
+
+        req.session.success = 'Utilizador eliminado com sucesso!'
+    } else if (action == 'edit') {
+        let { id, username, email, turmas, password, perms } = req.body
+        var sql = `UPDATE users SET username = ?, password = ?, email = ?, turma = ?, perms = ? WHERE id = ?`
+        await global.db(sql, [username, password, email, JSON.stringify(turmas), perms, id])
+
+        req.session.success = 'Utilizador editado com sucesso!'
+    }
+
+    return res.redirect('/admin/students')
 
 })
 
@@ -20,14 +43,14 @@ router.get('/classes', async (req, res) => {
 router.post('/classes', async (req, res) => {
     var { action } = req.body
 
-    if(action == 'delete'){
+    if (action == 'delete') {
         var { id } = req.body
         var sql = `DELETE FROM turmas WHERE turma = ?`
         await global.db(sql, [id])
 
         req.session.success = 'Turma apagada com sucesso!'
 
-    } else if(action == 'update'){
+    } else if (action == 'update') {
 
         var { id, nome, contents } = req.body
         var sql = `UPDATE turmas SET nome = ?, conteudos = ? WHERE turma = ?`
@@ -35,12 +58,12 @@ router.post('/classes', async (req, res) => {
 
         req.session.success = 'Turma atualizada com sucesso!'
 
-    } else if(action == 'add'){
+    } else if (action == 'add') {
 
         var { turma, nome, contents } = req.body
-        
+
         var test = await global.db(`SELECT * FROM turmas WHERE turma = ?`, [turma])
-        if(test.length > 0){
+        if (test.length > 0) {
             req.session.error = 'Já existe uma turma com esse nome!'
             return res.redirect('/admin/classes')
         }
@@ -73,7 +96,7 @@ router.post('/registrations', async (req, res) => {
         let { perm, turmas } = req.body
 
         var sql = `UPDATE users SET active = 1, perms = ?, turma = ? WHERE id = ?`
-        await global.db(sql, [perm, (turmas || '[]') , id])
+        await global.db(sql, [perm, (JSON.stringify(turmas) || '[]'), id])
 
         req.session.success = `Utilizador aprovado com sucesso!`
         return res.redirect('/admin/registrations')
