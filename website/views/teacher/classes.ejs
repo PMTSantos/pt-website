@@ -28,23 +28,9 @@
                     <td><%= turma.turma %></td>
                     <td><%= turma.nome %></td>
                     <td>
-                        <a href="/prof/classes/<%= encodeURIComponent(turma.turma) %>/contents">
-                            <button type="button" class="btn btn-primary">
-                                Conteúdos
-                            </button>
-                        </a>
-
-                        <a href="/prof/classes/<%= encodeURIComponent(turma.turma) %>/evaluations">
-                            <button type="button" class="btn btn-primary">
-                                Testes
-                            </button>
-                        </a>
-
-                        <a href="/prof/classes/<%= encodeURIComponent(turma.turma) %>/results">
-                            <button type="button" class="btn btn-primary">
-                                Resultados
-                            </button>
-                        </a>
+                        <a href="/prof/classes/<%= encodeURIComponent(turma.turma) %>/contents" class="btn btn-primary">Conteúdos</a>
+                        <a href="/prof/classes/<%= encodeURIComponent(turma.turma) %>/evaluations" class="btn btn-primary">Testes</a>
+                        <a href="/prof/classes/<%= encodeURIComponent(turma.turma) %>/results" class="btn btn-primary">Resultados</a>
                     </td>
                 </tr>
             <% }) %>
