@@ -1,23 +1,23 @@
-# DESCONTINUADO POR AGORA
+<h1 align="center">PT-WebSite</h3>
 <br />
 <div align="center">
   <a href="https://github.com/PMTSantos/pt-website/tree/main">
     <img src="img/VALDOTXUBA.png" alt="Logo" width="140" height="140">
   </a>
-
-  <h3 align="center">PT-WebSite</h3>
+  <h2 align="center">Val do Txuba</h2>
 </div>
 
 ## INSTALAÇÃO DB
 
-1.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)    <br>
-2.  No Mysql Command Line Client digite os seguintes comandos <br>
+1.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)<br><br>
+2.  No Mysql Command Line Client digite os seguintes comandos <br><br>
     ```sh
     CREATE DATABASE vdt;
     ```
     ```sh
     SOURCE (DIRETORIO)\database.sql
     ```
+    <br>
 
 
 ## INSTALAÇÃO SITE
@@ -41,6 +41,44 @@
 - [ ] Conteudos Adicionados
 - [ ] Testes Realizados
 - [ ] Publicar Site
+
+## PREVIEWS
+<h2 align="center"> Administradores</h2>
+<div align="center">
+  <a href="https://github.com/PMTSantos/pt-website/tree/main">
+    <img src="img/GerirInscrições.png" alt="Logo" width="100%" height="100%">
+    <img src="img/AprovarUtilizadores.png" alt="Logo" width="100%" height="100%">
+    <img src="img/GerirUtilizadores.png" alt="Logo" width="100%" height="100%">
+    <img src="img/EditarUtilizadores.png" alt="Logo" width="100%" height="100%">
+    <img src="img/EliminarUtilizador.png" alt="Logo" width="100%" height="100%">
+    <img src="img/GerirModulos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/EditarModulos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/EliminarModulos.png" alt="Logo" width="100%" height="100%">
+    
+  </a>
+ </div>
+ <br>
+ <br>
+ <h2 align="center"> Professores</h2>
+<div align="center">
+  <a href="https://github.com/PMTSantos/pt-website/tree/main">
+    <img src="img/VerModulos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/AdicionarConteudos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/GerenciarConteudos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/EditarConteudos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/EliminarConteudo.png" alt="Logo" width="100%" height="100%">
+  </a>
+ </div>
+  <br>
+ <br>
+ <h2 align="center"> Alunos</h2>
+<div align="center">
+  <a href="https://github.com/PMTSantos/pt-website/tree/main">
+    <img src="img/Login.png" alt="Logo" width="100%" height="100%">
+    <img src="img/Registar.png" alt="Logo" width="100%" height="100%">
+    <img src="img/PedidoDeRegistro.png" alt="Logo" width="100%" height="100%">
+  </a>
+ </div>
 
 ## OBJETIVO
 
