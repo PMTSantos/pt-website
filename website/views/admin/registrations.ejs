@@ -76,7 +76,7 @@
                     </div>
                     <div class="form-group">
                         <label for="select2Multiple">Turmas:</label>
-                        <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %> required>
+                        <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %>>
                             <% turmas.forEach(turma => { %>
                                 <option value="<%= turma.turma %>"><%= turma.nome %></option>
                             <% }) %>

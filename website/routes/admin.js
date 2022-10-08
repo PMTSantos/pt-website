@@ -24,7 +24,7 @@ router.post('/students', async (req, res) => {
     } else if (action == 'edit') {
         let { id, username, email, turmas, password, perms } = req.body
         var sql = `UPDATE users SET username = ?, password = ?, email = ?, turma = ?, perms = ? WHERE id = ?`
-        await global.db(sql, [username, password, email, JSON.stringify(turmas), perms, id])
+        await global.db(sql, [username, password, email, (JSON.stringify(turmas) || "[]"), perms, id])
 
         req.session.success = 'Utilizador editado com sucesso!'
     }

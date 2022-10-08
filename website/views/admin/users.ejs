@@ -39,7 +39,7 @@
                             <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#aproveModal" id="#myBtn" data-userid="<%= user.id %>" data-turma="<%= user.turma %>" data-perms="<%= user.perms %>" data-username="<%= user.username %>" data-email="<%= user.email %>" data-password="<%= user.password %>">
                                 Editar
                             </button>
-                            <button type="submit" class="btn btn-danger btn-sm" name="action" value="delete">Eliminar</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-userid="<%= user.id %>">Eliminar</button>
                         </form>
                     </td>
                 </tr>
@@ -89,9 +89,9 @@
                     </div>
                     <div class="form-group">
                         <label for="select2Multiple">Turmas:</label>
-                        <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %> required>
+                        <select class="select2-multiple form-control" name="turmas" id="select2Multiple" multiple="multiple" <%= (turmas.length == 0) ? "disabled": "" %>>
                             <% turmas.forEach(turma => {%>
-                                <option value="<%= turma.nome %>"><%= turma.nome %></option>
+                                <option value="<%= turma.turma %>"><%= turma.turma %></option>
                             <% }) %>
                         </select>
                     </div>
@@ -99,6 +99,29 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" name="action" value="edit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Utilizador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="userID" value="">
+                <div class="modal-body">
+                    <p>Tem a certeza que quer eliminar o Utilizador?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-primary">Eliminar</button>
                 </div>
             </form>
         </div>
@@ -152,6 +175,13 @@ $(document).ready(function () {
 
         $("#select2Multiple").val(turma).change()
              
+    })
+
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('userid');
+        var modal = $(this)
+            modal.find('#userID').val(recipient)
     })
 });
 
