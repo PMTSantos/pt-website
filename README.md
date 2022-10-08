@@ -1,23 +1,23 @@
-# DESCONTINUADO POR AGORA
+<h1 align="center">PT-WebSite</h3>
 <br />
 <div align="center">
   <a href="https://github.com/PMTSantos/pt-website/tree/main">
     <img src="img/VALDOTXUBA.png" alt="Logo" width="140" height="140">
   </a>
-
-  <h3 align="center">PT-WebSite</h3>
+  <h2 align="center">Val do Txuba</h2>
 </div>
 
 ## INSTALAÇÃO DB
 
-1.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)    <br>
-2.  No Mysql Command Line Client digite os seguintes comandos <br>
+1.  Instalar [MYSQL](https://dev.mysql.com/downloads/installer/)<br><br>
+2.  No Mysql Command Line Client digite os seguintes comandos <br><br>
     ```sh
     CREATE DATABASE vdt;
     ```
     ```sh
     SOURCE (DIRETORIO)\database.sql
     ```
+    <br>
 
 
 ## INSTALAÇÃO SITE
@@ -41,6 +41,8 @@
 - [ ] Conteudos Adicionados
 - [ ] Testes Realizados
 - [ ] Publicar Site
+
+## PREVIEWS
 
 ## OBJETIVO
 
