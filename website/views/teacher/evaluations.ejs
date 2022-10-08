@@ -20,6 +20,7 @@
         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
           <thead class="thead-light">
             <tr>
+              <th>Módulo</th>
               <th>Questão</th>
               <th>Nível</th>
               <th>Ações</th>
@@ -27,6 +28,7 @@
           </thead>
           <tfoot>
             <tr>
+              <th>Módulo</th>
               <th>Questão</th>
               <th>Nível</th>
               <th>Ações</th>
@@ -37,6 +39,7 @@
                 <tr>
                     <td><%= quest.module %></td>
                     <td><%- quest.question %></td>
+                    <td><%= quest.level %></td>
                     <td>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateContent" >
                             Editar
