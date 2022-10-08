@@ -3,7 +3,7 @@ const router = express.Router()
 const path = require('path')
 
 router.get('/students', async (req, res) => {
-    var sql = "SELECT * FROM users"
+    var sql = "SELECT * FROM users WHERE active = 1"
     let data = await global.db(sql)
 
     var sql = `SELECT * FROM turmas`
@@ -23,7 +23,7 @@ router.post('/students', async (req, res) => {
         req.session.success = 'Utilizador eliminado com sucesso!'
     } else if (action == 'edit') {
         let { id, username, email, turmas, password, perms } = req.body
-        var sql = `UPDATE users SET username = ?, password = ?, email = ?, turma = ?, perms = ? WHERE id = ?`
+        var sql = `UPDATE users SET username = ?, password = ?, email = ?, turmas = ?, perms = ? WHERE id = ?`
         await global.db(sql, [username, password, email, JSON.stringify(turmas), perms, id])
 
         req.session.success = 'Utilizador editado com sucesso!'
