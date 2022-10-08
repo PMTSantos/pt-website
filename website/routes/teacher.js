@@ -56,6 +56,37 @@ router.post('/classes/:module/contents', async (req, res) => {
 
 router.get('/classes/:module/evaluations', async (req, res) => {
 
+    let { module } = req.params
+
+    var sql = `SELECT * FROM module_evaluations WHERE module = ?`
+    var data = await global.db(sql, [module])
+
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'evaluations.ejs'), { data, user: req.session.user })
+
+})
+
+router.post('/classes/:module/evaluations', async (req, res) => {
+
+    let { action } = req.body
+    let module = req.params.module
+
+    if (action == 'new') {
+
+        let { editordata, answers, correct, level } = req.body
+
+        let arr = []
+        if(!Array.isArray(answers)) arr.push(answers)
+        else arr = answers
+
+        var sql = `INSERT INTO module_evaluations (module, question, answers, correct, level) VALUES (?, ?, ?, ?, ?)`
+        await global.db(sql, [module, String(editordata), JSON.stringify(arr), JSON.stringify(correct), level])
+
+        req.session.success = 'Questão criada com sucesso!'
+
+    }
+
+    return res.redirect(`/prof/classes/${encodeURIComponent(module)}/evaluations`)
+
 })
 
 router.get('/classes/:module/results', async (req, res) => {

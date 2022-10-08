@@ -1,0 +1,261 @@
+<%- include('../main.ejs')  %> 
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newContent">
+            Adicionar Questão
+        </button>
+    </div>
+</div>
+
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Gerir Questões</h6>
+      </div>
+      <div class="table-responsive p-3">
+        <% if(data.length > 0) { %> 
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <thead class="thead-light">
+            <tr>
+              <th>Questão</th>
+              <th>Nível</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>Questão</th>
+              <th>Nível</th>
+              <th>Ações</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <%data.forEach(quest => { %>
+                <tr>
+                    <td><%= quest.module %></td>
+                    <td><%- quest.question %></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateContent" >
+                            Editar
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteContent" data-id="<%= quest.id %>">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+            <p>Não existem questões neste módulo</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="newContent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Adicionar Questão</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="select2Single">Nível:</label>
+                        <input type="number" name="level" id="" class="form-control" min="1" max="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Single">Questão:</label>
+                        <textarea id="summernote" name="editordata" required></textarea>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="nopadding">
+                            <label for="select2Single">Respostas:</label>
+
+                            <div id="answersList">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="addAnswer()">Adicionar Resposta</button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="new" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateContent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Alterar Conteúdos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="select2Single">Posição:</label>
+                        <input type="number" name="position" id="position" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="select2Single">Título do Conteúdo:</label>
+                        <input type="text" name="title" id="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="nopadding">
+                            <label for="select2Single">Conteúdo:</label>
+                            <textarea id="summernote" name="editordata" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="edit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteContent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Conteúdo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="userID" value="">
+                <div class="modal-body">
+                    <p>Tem a certeza que quer eliminar o Conteúdo?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../footer.ejs')  %> 
+
+<script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- include summernote css/js -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script>
+    $(document).ready(function () {
+        //
+        $('#dataTableHover').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+            },
+        });
+        //
+        $('#deleteContent').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('id');
+
+            var modal = $(this)
+                modal.find('#userID').val(recipient)
+        })
+
+        $('#updateContent').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+
+            var id = button.data('id');
+            var title = button.data('title');
+            var content = button.data('content');
+            var position = button.data('position');
+
+            var modal = $(this)
+                modal.find('#id').val(id)
+                modal.find('#title').val(title)
+                modal.find('#summernote').summernote('code', content);
+                modal.find('#position').val(position)
+        })
+        //
+        $('#summernote').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['link']]
+        ],
+        popover: {
+            image: [
+                ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+                ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                ['remove', ['removeMedia']]
+            ],
+            link: [
+                ['link', ['linkDialogShow', 'unlink']]
+            ],
+            table: [
+                ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+                ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+            ],
+            air: [
+                ['color', ['color']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['para', ['ul', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']]
+            ]
+        }
+        });
+
+        
+});
+
+let answers = 0;
+
+function addAnswer() {
+    let div = document.getElementById('answersList');
+
+    let data = `
+    <div class="form-group">
+        <input type="text" name="answers" class="form-control">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="correct" value="${answers}" id="customCheck${answers}">
+            <label class="custom-control-label" for="customCheck${answers}">Esta questão está correta?</label>
+        </div>
+    </div>
+    `
+    let newDiv = document.createElement('div');
+    newDiv.innerHTML = data;
+
+    div.appendChild(newDiv);
+    answers++;
+}
+
+
+</script>
+

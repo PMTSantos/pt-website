@@ -53,15 +53,15 @@ router.post('/classes', async (req, res) => {
         var sql = `DELETE FROM modulos WHERE turma = ?`
         await global.db(sql, [id])
 
-        req.session.success = 'Turma apagada com sucesso!'
+        req.session.success = 'Módulo apagado com sucesso!'
 
     } else if (action == 'update') {
 
         var { id, nome, contents } = req.body
-        var sql = `UPDATE turmas SET nome = ?, conteudos = ? WHERE turma = ?`
+        var sql = `UPDATE modulos SET nome = ?, conteudos = ? WHERE turma = ?`
         await global.db(sql, [nome, String(contents), id])
 
-        req.session.success = 'Turma atualizada com sucesso!'
+        req.session.success = 'Módulo atualizado com sucesso!'
 
     } else if (action == 'add') {
 
@@ -69,14 +69,14 @@ router.post('/classes', async (req, res) => {
 
         var test = await global.db(`SELECT * FROM modulos WHERE turma = ?`, [turma])
         if (test.length > 0) {
-            req.session.error = 'Já existe uma turma com esse nome!'
+            req.session.error = 'Já existe um módulo com esse nome!'
             return res.redirect('/admin/classes')
         }
 
-        var sql = `INSERT INTO turmas (turma, nome, conteudos) VALUES (?, ?, ?)`
+        var sql = `INSERT INTO modulos (turma, nome, conteudos) VALUES (?, ?, ?)`
         await global.db(sql, [turma, nome, String(contents)])
 
-        req.session.success = 'Turma criada com sucesso!'
+        req.session.success = 'Módulo criado com sucesso!'
 
     }
 
