@@ -39,7 +39,7 @@
                             <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#aproveModal" id="#myBtn" data-userid="<%= user.id %>" data-turma="<%= user.turma %>" data-perms="<%= user.perms %>" data-username="<%= user.username %>" data-email="<%= user.email %>" data-password="<%= user.password %>">
                                 Editar
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-userid="<%= user.id %>">Eliminar</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-userid="<%= user.id %>" data-perms="<%= user.perms %>" data-username="<%= user.username %>">Eliminar</button>
                         </form>
                     </td>
                 </tr>
@@ -115,9 +115,9 @@
                 </button>
             </div>
             <form method="post">
-                <input type="hidden" name="id" id="userID" value="">
-                <div class="modal-body">
-                    <p>Tem a certeza que quer eliminar o Utilizador?</p>
+                <input type="hidden" name="id" id="userID"  value="">
+               <div class="modal-body">
+                    <p>Tem a certeza que quer eliminar o <span id="perms"></span> <span id="username"></span> </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
@@ -187,8 +187,16 @@ $(document).ready(function () {
     $('#deleteModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
         var recipient = button.data('userid');
+        var username = button.data('username');
+        var perms = button.data('perms');
+        if(perms == "admin") perms="Administrador"
+        else if(perms == "professor") perms ="Professor"
+        else if(perms == "aluno") perms = "Aluno"
         var modal = $(this)
             modal.find('#userID').val(recipient)
+            modal.find('#username').text(username)
+            modal.find('#perms').text(perms)
+            
     })
 });
 
