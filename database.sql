@@ -55,3 +55,28 @@ CREATE TABLE IF NOT EXISTS `user_content_views` (
   CONSTRAINT `user_content_views_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT `user_content_views_content_id` FOREIGN KEY (`content_id`) REFERENCES `module_content` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+
+CREATE TABLE IF NOT EXISTS `evaluations` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `module` VARCHAR(255) NOT NULL,
+  `start_date` DATETIME NOT NULL,
+  `end_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `module` (`module`) USING BTREE,
+  CONSTRAINT `evaluations_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS `user_evaluations` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `evaluation_id` BIGINT NOT NULL,
+  `questions` JSON NOT NULL,
+  `answers` JSON NOT NULL,
+  `score` INT NOT NULL,
+  `data` JSON NOT NULL DEFAULT ( JSON_ARRAY() ),
+  PRIMARY KEY (`id`),
+  INDEX `user_id` (`user_id`) USING BTREE,
+  INDEX `evaluation_id` (`evaluation_id`) USING BTREE,
+  CONSTRAINT `user_evaluations_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT `user_evaluations_evaluation_id` FOREIGN KEY (`evaluation_id`) REFERENCES `evaluations` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);

@@ -29,7 +29,7 @@ router.post('/:module/contents', async(req, res) => {
     return res.redirect(`/aluno/${encodeURIComponent(module)}/contents`)
 })
 
-router.get('/:module/avaluations', async(req, res) => {
+router.get('/:module/evaluations', async(req, res) => {
     
 })
 
