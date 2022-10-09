@@ -75,16 +75,45 @@ router.post('/classes/:module/evaluations', async (req, res) => {
         let { editordata, answers, correct, level } = req.body
 
         let arr = []
-        if(!Array.isArray(answers)) arr.push(answers)
+        if (!Array.isArray(answers)) arr.push(answers)
         else arr = answers
 
+        let arr2 = []
+        if (!Array.isArray(correct)) arr2.push(correct)
+        else arr2 = correct
+
         var sql = `INSERT INTO module_evaluations (module, question, answers, correct, level) VALUES (?, ?, ?, ?, ?)`
-        await global.db(sql, [module, String(editordata), JSON.stringify(arr), JSON.stringify(correct), level])
+        await global.db(sql, [module, String(editordata), JSON.stringify(arr), JSON.stringify(arr2), level])
 
         req.session.success = 'Questão criada com sucesso!'
 
-    }
+    } else if (action == 'edit') {
 
+        let { editordata, answers, correct, level, id } = req.body
+
+        let arr = []
+        if (!Array.isArray(answers)) arr.push(answers)
+        else arr = answers
+
+        let arr2 = []
+        if (!Array.isArray(correct)) arr2.push(correct)
+        else arr2 = correct
+
+        var sql = `UPDATE module_evaluations SET question = ?, answers = ?, correct = ?, level = ? WHERE id = ?`
+        await global.db(sql, [String(editordata), JSON.stringify(arr), JSON.stringify(arr2), level, id])
+
+        req.session.success = 'Questão editada com sucesso!'
+
+    } else if (action == 'delete') {
+
+        let { id } = req.body
+
+        var sql = `DELETE FROM module_evaluations WHERE id = ?`
+        await global.db(sql, [id])
+
+        req.session.success = 'Questão eliminada com sucesso!'
+
+    }
     return res.redirect(`/prof/classes/${encodeURIComponent(module)}/evaluations`)
 
 })
