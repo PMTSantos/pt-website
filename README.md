@@ -84,6 +84,18 @@
   </a>
  </div>
 
+## FUNCIONALIDADES
+  - Admin:
+    - Gerir Utilizadores
+    - Gerir Módulos
+    - Gerir Inscrições na Plataforma
+  - Professor:
+    - Gerir Conteudos dos Módulos designados
+    - Criar Testes (Em fase de desenvolvimento)
+  - Aluno:
+    - Aceder aos conteudos dos módulos
+    - Realizar Testes (Em fase de desenvolvimento)
+ 
 ## OBJETIVO
 
 AINDA A PENSAR NUM TEXTO BONITO
