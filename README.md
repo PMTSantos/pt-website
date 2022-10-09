@@ -77,6 +77,10 @@
     <img src="img/Login.png" alt="Logo" width="100%" height="100%">
     <img src="img/Registar.png" alt="Logo" width="100%" height="100%">
     <img src="img/PedidoDeRegistro.png" alt="Logo" width="100%" height="100%">
+    <img src="img/UserModulos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/UserModulosModal.png" alt="Logo" width="100%" height="100%">
+    <img src="img/UserModulosConteudos.png" alt="Logo" width="100%" height="100%">
+    <img src="img/UserModulosConteudosModal.png" alt="Logo" width="100%" height="100%">
   </a>
  </div>
 
