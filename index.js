@@ -111,8 +111,9 @@ app.use(function (req, res, next) {
 });
 
 app.get('/logout', function (req, res) {
+    let lastUrl = req.get('Referrer')
     req.session.destroy(function () {
-        res.redirect(`/?info=` + encodeURIComponent('Sessão terminada com sucesso'));
+        res.redirect(`/?info=${encodeURIComponent('Sessão terminada com sucesso')}&url=${encodeURIComponent(lastUrl)}`);
     });
 });
 
@@ -163,6 +164,7 @@ app.get('/dashboard', restrict, async (req, res) => {
 app.post('/', async (req, res) => {
     let { email, ppw } = req.body;
     let { url } = req.query
+
     let user = await global.db('SELECT * FROM users WHERE email = ? AND password = ?', [email, ppw]);
 
     if (user.length > 0) {
