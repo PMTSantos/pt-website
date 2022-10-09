@@ -84,7 +84,7 @@
   </a>
  </div>
 
-## FUNCIONALIDADES
+## FUNCIONALIDADES (Ainda serão adicionadas mais)
   - Admin:
     - Gerir Utilizadores
     - Gerir Módulos
