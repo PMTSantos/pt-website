@@ -21,6 +21,7 @@
           <thead class="thead-light">
             <tr>
               <th>Módulo</th>
+              <th>Posição</th>
               <th>Nome</th>
               <th>Ações</th>
             </tr>
@@ -28,6 +29,7 @@
           <tfoot>
             <tr>
               <th>Módulo</th>
+              <th>Posição</th>
               <th>Nome</th>
               <th>Ações</th>
             </tr>
@@ -36,6 +38,7 @@
             <%data.forEach(turma => { %>
                 <tr>
                     <td><%= turma.module %></td>
+                    <td><%= turma.position %></td>
                     <td><%= turma.content_title %></td>
                     <td>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateContent" data-id="<%= turma.id %>" data-title="<%= turma.content_title %>" data-content="<%= turma.content %>" data-position="<%= turma.position%>">
@@ -71,7 +74,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="select2Single">Posição:</label>
-                        <input type="number" name="position" id="" class="form-control" required>
+                        <input type="number" name="position" id="" class="form-control" min="1" required>
                     </div>
                     <div class="form-group">
                         <label for="select2Single">Título do Conteúdo:</label>
@@ -107,7 +110,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="select2Single">Posição:</label>
-                        <input type="number" name="position" id="position" class="form-control" required>
+                        <input type="number" name="position" id="position" class="form-control" min="1" required>
                     </div>
                     <div class="form-group">
                         <label for="select2Single">Título do Conteúdo:</label>

@@ -39,3 +39,19 @@ CREATE TABLE `module_evaluations` (
 	INDEX `module` (`module`) USING BTREE,
 	CONSTRAINT `module_evaluations` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
 )
+
+CREATE TABLE IF NOT EXISTS `user_content_views` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `module` VARCHAR(255) NOT NULL,
+  `content_id` BIGINT(19)  NOT NULL,
+  `viewed` TINYINT(1) NOT NULL DEFAULT '0',
+  `data`JSON NOT NULL DEFAULT ( JSON_ARRAY() ),
+  PRIMARY KEY (`id`),
+  INDEX `user_id` (`user_id`) USING BTREE,
+  INDEX `module` (`module`) USING BTREE,
+  INDEX `content_id` (`content_id`) USING BTREE,
+  CONSTRAINT `user_content_views_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT `user_content_views_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT `user_content_views_content_id` FOREIGN KEY (`content_id`) REFERENCES `module_content` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
+);

@@ -52,7 +52,7 @@
 
 $(document).ready(function () {
   $("#myBtn").click(function () {
-    $('.modal').modal('show');
+    $('.modal').modal('show', {});
   });
 
   $("#modalLong").click(function () {

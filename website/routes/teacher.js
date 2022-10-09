@@ -9,7 +9,7 @@ router.get('/classes', async (req, res) => {
     var sql = `SELECT turma FROM users WHERE id = ${req.session.user.id}`
     var turma = await global.db(sql)
 
-    let final = data.filter(d => turma.some(t => t.turma == d.turma))
+    let final = data.filter(d => turma[0].turma.includes(d.turma))
 
     return res.render(path.join(__dirname, '..', 'views', 'teacher', 'classes.ejs'), { data: final, user: req.session.user })
 

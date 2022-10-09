@@ -147,8 +147,17 @@ app.get('/register', (req, res) => {
     res.render(path.join(__dirname, 'website', 'views', 'register.ejs'));
 })
 
-app.get('/dashboard', restrict, (req, res) => {
-    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'), { user: req.session.user });
+app.get('/dashboard', restrict, async (req, res) => {
+
+    var sql = `SELECT * FROM modulos`
+    var data = await global.db(sql)
+
+    var sql = `SELECT turma FROM users WHERE id = ${req.session.user.id}`
+    var turma = await global.db(sql)
+
+    let final = data.filter(d => turma[0].turma.includes(d.turma))
+
+    res.render(path.join(__dirname, 'website', 'views', 'user', 'dash.ejs'), { user: req.session.user, data: final });
 })
 
 app.post('/', async (req, res) => {

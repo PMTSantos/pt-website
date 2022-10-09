@@ -1,0 +1,151 @@
+<%- include('../main.ejs')  %> 
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Ver Conteúdos</h6>
+      </div>
+      <div class="table-responsive p-3">
+        <% if(data.length > 0) { %> 
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <thead class="thead-light">
+            <tr>
+              <th>Módulo</th>
+              <th>Estado</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>Módulo</th>
+              <th>Estado</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <%data.forEach(turma => { %>
+                <tr>
+                    <td><%= turma.module %></td>
+                    <td>
+                        <% 
+                            let final = viewed.filter(v => v.content_id == turma.id)
+                        %>
+                        <%- (final.length >= 1)? "<i class=\"fa-solid fa-eye\"></i>  Visto" : "<span class=\"text-primary\"><i class=\"fa-solid fa-eye-slash\"></i> Por ver</span>"%>
+                    </td>
+                    <td><%= turma.content_title %></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateContent" data-id="<%= turma.id %>" data-title="<%= turma.content_title %>" data-content="<%= turma.content %>">
+                            Ver
+                        </button>
+                    </td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+            <p>Não existem conteúdos neste módulo</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateContent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title"></h5>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="id">
+                <input type="hidden" name="tempo" id="tempo" value="">
+                <input type="hidden" name="pausas" id="pausas" value="0">
+                <input type="hidden" name="tempoPausas" id="tempoPausas" value="">
+                <div class="modal-body">       
+                    <div id="content">
+
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="action" value="exit" class="btn btn-primary">Sair</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<%- include('../footer.ejs')  %> 
+
+<script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- include summernote css/js -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script>
+$(document).ready(function () {
+    $('#dataTableHover').DataTable({
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+        },
+    });
+    //
+
+    $('#updateContent').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+
+        var id = button.data('id');
+        var title = button.data('title');
+        var content = button.data('content');
+        var position = button.data('position');
+
+        var modal = $(this)
+            modal.find('#id').val(id)
+            modal.find('#title').text(title)
+            
+            modal.find('#content').empty();
+            modal.find('#content').append($.parseHTML( content ));
+
+            var timerVariable = setInterval(countUpTimer, 1000);
+            var normal = 0;
+            var paused = 0;
+
+            let counter = {
+                running: true,
+            }
+
+            window.onblur = function () { 
+                counter.running = false;
+                document.getElementById("pausas").value = parseInt(document.getElementById("pausas").value) + 1;
+            }; 
+            window.onfocus = function () { 
+                counter.running = true; 
+            }; 
+
+            function countUpTimer() {
+                
+                if(counter.running) {
+                    normal++;
+                    var hour = Math.floor(normal / 3600);
+                    var minute = Math.floor((normal - hour * 3600) / 60);
+                    var seconds = normal - (hour * 3600 + minute * 60);
+                    document.getElementById("tempo").value = hour + ":" + minute + ":" + seconds;
+                } else {
+                    paused++;
+                    var hour = Math.floor(paused / 3600);
+                    var minute = Math.floor((paused - hour * 3600) / 60);
+                    var seconds = paused - (hour * 3600 + minute * 60);
+                    document.getElementById("tempoPausas").value = hour + ":" + minute + ":" + seconds;
+                }
+                
+            }
+    })      
+});
+
+</script>
+
