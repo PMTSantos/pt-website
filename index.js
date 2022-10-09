@@ -54,8 +54,8 @@ app.use(session({
 //app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
-app.use(express.json({limit: '100mb'}));
-app.use(express.urlencoded({limit: '100mb', extended:false}));
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: false }));
 
 app.listen(80, () => {
     console.log('Application listening on port 80!');
@@ -79,7 +79,7 @@ function restrict(req, res, next) {
     } else {
         let error = `Acesso negado!`
         req.session.error = error;
-        res.redirect('/');
+        res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
 }
 
@@ -112,7 +112,7 @@ app.use(function (req, res, next) {
 
 app.get('/logout', function (req, res) {
     req.session.destroy(function () {
-        res.redirect(`/?info=`+ encodeURIComponent('Sessão terminada com sucesso'));
+        res.redirect(`/?info=` + encodeURIComponent('Sessão terminada com sucesso'));
     });
 });
 
@@ -138,9 +138,9 @@ app.get('/', (req, res) => {
             <h6><i class="fas fa-ban"></i><b> Erro!</b></h6>
             ${query.error}
         </div>`
-    
+
     else if (query.error) st = `<div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>${query.error}</div>`
-    res.render(path.join(__dirname, 'website', 'views', 'login.ejs'), {st});
+    res.render(path.join(__dirname, 'website', 'views', 'login.ejs'), { st });
 })
 
 app.get('/register', (req, res) => {
@@ -162,15 +162,15 @@ app.get('/dashboard', restrict, async (req, res) => {
 
 app.post('/', async (req, res) => {
     let { email, ppw } = req.body;
-
+    let { url } = req.query
     let user = await global.db('SELECT * FROM users WHERE email = ? AND password = ?', [email, ppw]);
 
     if (user.length > 0) {
-        if(user[0].active == '1') {
-        req.session.user = user[0];
-        res.redirect('/dashboard');
+        if (user[0].active == '1') {
+            req.session.user = user[0];
+            res.redirect(url || '/dashboard');
         } else {
-            res.redirect(`/?error=`+ encodeURIComponent('Conta Pendente para Aprovação!'));
+            res.redirect(`/?error=` + encodeURIComponent('Conta Pendente para Aprovação!'));
         }
     }
     else {
