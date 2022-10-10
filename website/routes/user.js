@@ -30,7 +30,17 @@ router.post('/:module/contents', async(req, res) => {
 })
 
 router.get('/:module/evaluations', async(req, res) => {
-    
+    var { module } = req.params
+
+    var sql = `SELECT * FROM evaluations WHERE module = ?`
+    var evaluations = await global.db(sql, [module])
+
+    var sql = `SELECT evaluation_id, score FROM user_evaluations WHERE user_id = ?`
+    var viewed = await global.db(sql, [req.session.user.id, ])
+
+    let data = evaluations.filter(e => viewed.some(v => v.evaluation_id == e.id))
+    return res.render(path.join(__dirname, '..', 'views', 'user', 'evaluations.ejs'), { data, user: req.session.user, viewed})
+
 })
 
 module.exports = router

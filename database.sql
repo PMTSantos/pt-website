@@ -38,7 +38,7 @@ CREATE TABLE `module_evaluations` (
 	PRIMARY KEY (`id`) USING BTREE,
 	INDEX `module` (`module`) USING BTREE,
 	CONSTRAINT `module_evaluations` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
-)
+);
 
 CREATE TABLE IF NOT EXISTS `user_content_views` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -56,14 +56,14 @@ CREATE TABLE IF NOT EXISTS `user_content_views` (
   CONSTRAINT `user_content_views_content_id` FOREIGN KEY (`content_id`) REFERENCES `module_content` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
-CREATE TABLE IF NOT EXISTS `evaluations` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `module` VARCHAR(255) NOT NULL,
-  `start_date` DATETIME NOT NULL,
-  `end_date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `module` (`module`) USING BTREE,
-  CONSTRAINT `evaluations_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
+CREATE TABLE `evaluations` (
+	`id` BIGINT(19) NOT NULL AUTO_INCREMENT,
+	`module` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`end_date` TIMESTAMP NOT NULL,
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `module` (`module`) USING BTREE,
+	CONSTRAINT `evaluations_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE IF NOT EXISTS `user_evaluations` (

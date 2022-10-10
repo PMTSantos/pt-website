@@ -176,7 +176,7 @@ app.post('/', async (req, res) => {
         }
     }
     else {
-        let error = `Utilizador ou password incorretos!`
+        let error = `Email ou password incorretos!`
         req.session.error = error;
         res.redirect('/');
     }
