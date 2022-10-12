@@ -119,6 +119,11 @@ router.post('/classes/:module/evaluations', async (req, res) => {
     } else if (action == 'test') {
         let { quant, start, end } = req.body
 
+        if(new Date(end) < new Date(start)) {
+            req.session.error = 'A data de fim não pode ser maior que a data de início!'
+            return res.redirect(`/prof/classes/${encodeURIComponent(module)}/evaluations`)
+        }
+
         var sql = `INSERT INTO evaluations (module, quest_n, start_date, end_date) VALUES (?, ?, ?, ?)`
         await global.db(sql, [module, quant, start, end])
 
@@ -132,6 +137,11 @@ router.post('/classes/:module/evaluations', async (req, res) => {
         req.session.success = 'Teste eliminado com sucesso!'
     } else if (action == 'update_test') {
         let { id, quant, start, end } = req.body
+
+        if(new Date(end) < new Date(start)) {
+            req.session.error = 'A data de fim não pode ser maior que a data de início!'
+            return res.redirect(`/prof/classes/${encodeURIComponent(module)}/evaluations`)
+        }
 
         var sql = `UPDATE evaluations SET quest_n = ?, start_date = ?, end_date = ? WHERE id = ?`
         await global.db(sql, [quant, start, end, id])
