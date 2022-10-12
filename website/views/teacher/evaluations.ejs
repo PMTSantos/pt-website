@@ -1,12 +1,20 @@
 <%- include('../main.ejs')  %> 
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
+
 <div class="col-lg-12">
-    <div class="card mb-4">
+
+    <div class="card mb-2">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newContent">
             Adicionar Questão
         </button>
     </div>
+    <div class="card mb-4">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sendTest">
+            Criar Teste
+        </button>
+    </div>
+
 </div>
 
 
@@ -60,7 +68,69 @@
   </div>
 </div>
 
+<div class="col-lg-12">
+    <div class="card mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Gerir Testes</h6>
+      </div>
+      <div class="table-responsive p-3">
+        <% if(data.length > 0) { %> 
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover2">
+          <thead class="thead-light">
+            <tr>
+              <th>Módulo</th>
+              <th>Inicio</th>
+              <th>Fim</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+               <th>Módulo</th>
+               <th>Inicio</th>
+               <th>Fim</th>
+               <th>Ações</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <%evaluations.forEach(eval => { %>
+                <tr>
+                    <td><%= eval.module %></td>
+                    <td>
+                        <% 
+                        let s = new Date(eval.start_date)
+                        let start = s.getDate() + '/' + (s.getMonth() + 1)+ '/' + s.getFullYear() + ' ' + s.getHours() + ':' + s.getMinutes()
+                        %>
+                        <%= start %>
+                    </td>
+                    <td>
+                        <% 
+                        let e = new Date(eval.end_date)
+                        let end = e.getDate() + '/' + (s.getMonth() + 1) + '/' + e.getFullYear() + ' ' + e.getHours() + ':' + e.getMinutes()
+                        %>
+                        <%= end %>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateEvaluation" data-id="<%= eval.id %>" data-module="<%= eval.module %>" data-start="<%= eval.start_date %>" data-end="<%= eval.end_date %>" data-questn="<%= eval.quest_n %>">
+                            Editar
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteEvaluation" data-id="<%= eval.id %>">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+            <p>Não existem testes neste módulo</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- QUESTIONS -->
 <div class="modal fade" id="newContent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -163,16 +233,118 @@
         </div>
     </div>
 </div>
+<!-- EVALUATIONS -->
+<div class="modal fade" id="sendTest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Criar Teste</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="select2Single">Quantas questões?</label>
+                        <input type="number" name="quant" id="level" class="form-control" min="1" required>
+                    </div>
+                    
+                    
+                    <div class="form-group">
+                        
+                            <label for="select2Single">Quando deve iniciar o teste?</label>
+                            <input id="datepicker-start" name="start" type="text" class="form-control" data-zdp_readonly_element="false">
+                        
+                            <label for="select2Single">Quando deve terminar o teste?</label>
+                            <input id="datepicker-end" name="end" type="text" class="form-control" data-zdp_readonly_element="false">
+                        </div>
+                   
+                        
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="test" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateEvaluation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Teste</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="userID" value="">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="select2Single">Quantas questões?</label>
+                        <input type="number" name="quant" id="quant" class="form-control" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        
+                            <label for="select2Single">Quando deve iniciar o teste?</label>
+                            <input id="datepicker-start2" name="start" type="text" class="form-control" data-zdp_readonly_element="false">
+                        
+                            <label for="select2Single">Quando deve terminar o teste?</label>
+                            <input id="datepicker-end2" name="end" type="text" class="form-control" data-zdp_readonly_element="false">
+                        </div>
+                   
+                        
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="update_test" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteEvaluation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Teste</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="userID" value="">
+                <div class="modal-body">
+                    <p>Tem a certeza que quer eliminar o teste?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="delete_test" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <%- include('../footer.ejs')  %> 
 
 <script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
+<script
+  src="https://cdn.jsdelivr.net/npm/zebra_datepicker@latest/dist/zebra_datepicker.min.js"></script>
 <!-- include summernote css/js -->
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
+
 <!-- Page level custom scripts -->
+
+
 <script>
     let answersA = {
         new: 0,
@@ -180,15 +352,92 @@
     };
 
     $(document).ready(function () {
-        //
 
+        $('#datepicker-start').Zebra_DatePicker({
+            format: 'Y-m-d H:i',
+            direction: true,
+            pair: $('#datepicker-end')
+        });
+        $('#datepicker-end').Zebra_DatePicker({
+            format: 'Y-m-d H:i',
+            direction: 1
+        });
 
+        $('#datepicker-start2').Zebra_DatePicker({
+            format: 'Y-m-d H:i',
+            //direction: true,
+            pair: $('#datepicker-end2')
+        });
+        $('#datepicker-end2').Zebra_DatePicker({
+            format: 'Y-m-d H:i',
+            //direction: -1
+        });
+
+       //
         $('#dataTableHover').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
             },
         });
+        $('#dataTableHover2').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+            },
+        });
         //
+        $('#sendTest').on('show.bs.modal', function (event) {
+            var dp = document.getElementsByClassName("Zebra_DatePicker_Icon_Wrapper");
+            var i;
+
+            for (i = 0; i < dp.length; i++) {
+                dp[i].style.width = null;
+            }
+        })
+
+        $('#deleteEvaluation').on('show.bs.modal', function (event) {
+            var dp = document.getElementsByClassName("Zebra_DatePicker_Icon_Wrapper");
+            var i;
+
+            for (i = 0; i < dp.length; i++) {
+                dp[i].style.width = null;
+            }
+
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('id');
+
+            var modal = $(this)
+                modal.find('#userID').val(recipient)
+        })
+
+        $('#updateEvaluation').on('show.bs.modal', async function (event) {
+            var dp = document.getElementsByClassName("Zebra_DatePicker_Icon_Wrapper");
+            var i;
+
+            for (i = 0; i < dp.length; i++) {
+                dp[i].style.width = null;
+            }
+            
+            var button = $(event.relatedTarget)
+            var recipient = button.data('id');
+            var quest = button.data('questn');
+            var s = button.data('start');
+            var e = button.data('end');
+
+            var modal = $(this)
+
+                modal.find('#userID').val(recipient)
+                modal.find('#quant').val(quest)
+
+                var startPicker = $('#datepicker-start2').data('Zebra_DatePicker');
+                startPicker.clear_date();
+                startPicker.set_date(new Date(s));
+
+                var endPicker = $('#datepicker-end2').data('Zebra_DatePicker');
+                endPicker.clear_date();
+                endPicker.set_date(new Date(e));
+
+        })
+
         $('#deleteQuestion').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('id');

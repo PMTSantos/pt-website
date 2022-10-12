@@ -61,7 +61,10 @@ router.get('/classes/:module/evaluations', async (req, res) => {
     var sql = `SELECT * FROM module_evaluations WHERE module = ?`
     var data = await global.db(sql, [module])
 
-    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'evaluations.ejs'), { data, user: req.session.user })
+    var sql = `SELECT * FROM evaluations WHERE module = ?`
+    var evaluations = await global.db(sql, [module])
+
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'evaluations.ejs'), { data, user: req.session.user, evaluations })
 
 })
 
@@ -113,7 +116,30 @@ router.post('/classes/:module/evaluations', async (req, res) => {
 
         req.session.success = 'Questão eliminada com sucesso!'
 
+    } else if (action == 'test') {
+        let { quant, start, end } = req.body
+
+        var sql = `INSERT INTO evaluations (module, quest_n, start_date, end_date) VALUES (?, ?, ?, ?)`
+        await global.db(sql, [module, quant, start, end])
+
+        req.session.success = 'Teste criado com sucesso!'
+    } else if (action == 'delete_test') {
+        let { id } = req.body
+
+        var sql = `DELETE FROM evaluations WHERE id = ?`
+        await global.db(sql, [id])
+
+        req.session.success = 'Teste eliminado com sucesso!'
+    } else if (action == 'update_test') {
+        let { id, quant, start, end } = req.body
+
+        var sql = `UPDATE evaluations SET quest_n = ?, start_date = ?, end_date = ? WHERE id = ?`
+        await global.db(sql, [quant, start, end, id])
+
+        req.session.success = 'Teste editado com sucesso!'
+
     }
+
     return res.redirect(`/prof/classes/${encodeURIComponent(module)}/evaluations`)
 
 })

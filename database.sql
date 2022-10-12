@@ -59,12 +59,13 @@ CREATE TABLE IF NOT EXISTS `user_content_views` (
 CREATE TABLE `evaluations` (
 	`id` BIGINT(19) NOT NULL AUTO_INCREMENT,
 	`module` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci',
+	`quest_n` INT(10) NULL DEFAULT NULL,
 	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`end_date` TIMESTAMP NOT NULL,
 	PRIMARY KEY (`id`) USING BTREE,
 	INDEX `module` (`module`) USING BTREE,
 	CONSTRAINT `evaluations_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
-);
+)
 
 CREATE TABLE IF NOT EXISTS `user_evaluations` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,

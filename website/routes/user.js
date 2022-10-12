@@ -38,7 +38,7 @@ router.get('/:module/evaluations', async(req, res) => {
     var sql = `SELECT evaluation_id, score FROM user_evaluations WHERE user_id = ?`
     var viewed = await global.db(sql, [req.session.user.id, ])
 
-    let data = evaluations.filter(e => viewed.some(v => v.evaluation_id == e.id))
+    let data = evaluations/*.filter(e => viewed.some(v => v.evaluation_id == e.id))*/
     return res.render(path.join(__dirname, '..', 'views', 'user', 'evaluations.ejs'), { data, user: req.session.user, viewed})
 
 })

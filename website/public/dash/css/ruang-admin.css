@@ -43,6 +43,11 @@ a:focus {
   padding-right: 1.5rem
 }
 
+span.Zebra_DatePicker_Icon_Wrapper {
+  display: block!important;
+  width: 100%!important;
+  position: relative!important;
+}
 
 .scroll-to-top {
   position: fixed;
