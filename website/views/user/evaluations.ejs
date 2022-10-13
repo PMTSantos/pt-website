@@ -56,8 +56,9 @@
                     <td>
                         <% 
                             let score = viewed.filter(v => v.score >= 0 && v.evaluation_id == eval.id)
+                            let maxScore = eval.quest_n
                         %>
-                        <%- (score.length >= 1)? score[0].score : "0" %>
+                        <%- (score.length >= 1)? score[0].score + '%'  : "N/A" %>
                     <td>
                         <% let module1 = encodeURIComponent(eval.module)  %>
                         <% 
@@ -66,8 +67,9 @@
                           if(date > eval.start_date && date < eval.end_date) {
                             enabled = true;
                           }
+                          let url = "/aluno/" + module1 + "/evaluations/" + eval.id
                         %> 
-                        <button <%= (final.length >= 1)? `onclick=\"window.location = '/aluno/${module1}/evaluations/${eval.id}';`: '' %> class="btn btn-primary btn-sm" <%= final.length >= 1? "disabled" : enabled? " " : "disabled" %>>Realizar</button>
+                        <button <%- (final.length >= 1)? '':`onclick=\"window.location = '${url}';\"` %> class="btn btn-primary btn-sm" <%= final.length >= 1? "disabled" : enabled? " " : "disabled" %>>Realizar</button>
                     </td>
                 </tr>
             <% }) %>
