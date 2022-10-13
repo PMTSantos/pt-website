@@ -84,10 +84,14 @@ router.get('/:module/evaluations/:id', async (req, res) => {
             let randomIndex = Math.floor(Math.random() * evaluations.length)
             var data = {
                 questions: evaluations[randomIndex].question,
-                answers: evaluations[randomIndex].answers,
                 hasMultiple: evaluations[randomIndex].correct.length > 1 ? true : false,
                 isLast: i == questions - 1 ? true : false,
             }
+            //get all the answers, randomize them and set it to the data
+            let answers = evaluations[randomIndex].answers
+            answers = answers.sort(() => Math.random() - 0.5)
+            data.answers = answers
+            
             random.push(data)
             evaluations.splice(randomIndex, 1)
         }
@@ -162,10 +166,18 @@ router.post('/:module/evaluations/:id', async (req, res) => {
 
         let score = 0;
         for (let i = 0; i < sqlData[0].questions.length; i++) {
-            let correct = evaluations.find(e => e.question == sqlData[0].questions[i].questions).correct
-            let answer = sqlData[0].answers[i]
+            let correctIndex = evaluations.find(e => e.question == sqlData[0].questions[i].questions).correct
+            let answerIndex = sqlData[0].answers[i]
 
-            if (correct == answer) score++;
+            //get user answer value from questions column
+            let userAnswer = sqlData[0].questions[i].answers[answerIndex]
+            //get correct answer value from answers column
+            let correctAnswer = evaluations.find(e => e.question == sqlData[0].questions[i].questions).answers[correctIndex]
+            //compare both
+            if (userAnswer == correctAnswer) score++
+           
+            
+
         }
 
         score = (score / sqlData[0].questions.length) * 100

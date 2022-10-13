@@ -1,0 +1,122 @@
+<%- include('../main.ejs')  %> 
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Ver Resultados</h6>
+      </div>
+      <div class="table-responsive p-3">
+        <% if(data.length > 0) { %> 
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+          <thead class="thead-light">
+            <tr>
+              <th>Módulo</th>
+              <th>Início</th>
+              <th>Fim</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <th>Módulo</th>
+              <th>Posição</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </tfoot>
+          <tbody>
+            <%data.forEach(eval => { %>
+                <tr>
+                    <td><%= eval.module %></td>
+                    <td>
+                        <% 
+                        let s = new Date(eval.start_date)
+                        let start = s.getDate() + '/' + (s.getMonth() + 1)+ '/' + s.getFullYear() + ' ' + s.getHours() + ':' + s.getMinutes()
+                        %>
+                        <%= start %>
+                    </td>
+                    <td>
+                        <% 
+                        let e = new Date(eval.end_date)
+                        let end = e.getDate() + '/' + (e.getMonth() + 1)+ '/' + e.getFullYear() + ' ' + e.getHours() + ':' + e.getMinutes()
+                        %>
+                        <%= end %>
+                    </td>
+                    <td>
+                        <% let url = '/classes/' + encodeURIComponent(eval.module) + '/results/' + eval.id %> 
+                        <button type="button"  onclick="window.location= '<%= url %>';" class="btn btn-primary">
+                            Ver Resultados
+                        </button>
+                        
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteEvaluations" data-id="<%= eval.id %>" >
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+            <p>Não existem testes neste módulo</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="deleteEvaluations" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Resultados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="id" id="userID" value="">
+                <div class="modal-body">
+                    <p>Tem a certeza que quer <b>APAGAR TODOS</b> os resultados deste teste?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../footer.ejs')  %> 
+
+<script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- include summernote css/js -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script>
+    $(document).ready(function () {
+        //
+        $('#dataTableHover').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+            },
+        });
+        //
+        $('#deleteEvaluations').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('id');
+
+            var modal = $(this)
+                modal.find('#userID').val(recipient)
+
+        })
+
+        
+});
+</script>
+

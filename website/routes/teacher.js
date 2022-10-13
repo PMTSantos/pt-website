@@ -155,7 +155,32 @@ router.post('/classes/:module/evaluations', async (req, res) => {
 })
 
 router.get('/classes/:module/results', async (req, res) => {
+        let { module } = req.params
+    
+        var sql = `SELECT * FROM evaluations WHERE module = ?`
+        var data = await global.db(sql, [module])
+    
+        return res.render(path.join(__dirname, '..', 'views', 'teacher', 'results.ejs'), { data, user: req.session.user })
+})
 
+router.post('/classes/:module/results', async (req, res) => {
+    let { module } = req.params
+
+    let { action } = req.body
+
+    if (action == 'delete') {
+        let { id } = req.body
+        var sql = `DELETE FROM user_evaluations WHERE evaluation_id = ?`
+        await global.db(sql, [id])
+
+        var sql = `DELETE FROM evaluations WHERE id = ?`
+        await global.db(sql, [id])
+
+
+        req.session.success = 'Teste eliminado com sucesso!'
+    }
+
+    return res.redirect(`/prof/classes/${encodeURIComponent(module)}/results`)
 })
 
 
