@@ -224,7 +224,6 @@ router.post('/classes/:module/results/:id', async (req, res) => {
 router.get('/classes/:module/results/:id/:user', async (req, res) => {
     let { module, id, user } = req.params
 
-    //get all the tests from the id
     var sql = `SELECT * FROM user_evaluations WHERE evaluation_id = ? AND user_id = ?`
     var sqlData = await global.db(sql, [id, user])
 
@@ -233,9 +232,23 @@ router.get('/classes/:module/results/:id/:user', async (req, res) => {
     if(req.query.page) page = req.query.page
     else page = 0
 
+    var sql = `SELECT * FROM module_evaluations WHERE module = ?`
+    var correctData = await global.db(sql, [module])
+
+    let filtered = correctData.find((e) => e.question == sqlData[0].questions[page].questions)
+
+    let correct = filtered.correct
+    let answersCorrect = []
+    correct.forEach((e) => {
+        answersCorrect.push(filtered.answers[e])
+    })
+
     let data = {
         questions: sqlData[0].questions[page],
-        answers: sqlData[0].answers[page],
+        answers: {
+            user: sqlData[0].answers[page],
+            correct: answersCorrect,
+        },
         time: sqlData[0].data[page]
     }
 

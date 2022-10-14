@@ -9,7 +9,7 @@
     <link href="/static/dash/img/logo/VALDOTXUBA.png" rel="icon">
     <link href="/static/dash/img/logo/VALDOTXUBA.png" rel="apple-touch-icon">
     <link href="/static/dash/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"/>
 </head>
 
 <style>
@@ -205,13 +205,13 @@
                 <% data.questions.answers.forEach((a, i) => { %> 
                     <% if(data.questions.hasMultiple){ %> 
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="customCheck<%= i %>" name="resp" <%= data.answers.includes(i)? "checked": "" %> >
-                        <label class="custom-control-label" for="customCheck<%= i %>"><%- a %></label>
+                        <input type="checkbox" class="custom-control-input" id="customCheck<%= i %>" name="resp" <%= data.answers.user.includes(i)? "checked": "" %> >
+                        <label class="custom-control-label" for="customCheck<%= i %>"><%- data.answers.correct.find(d => d.includes(a))? '<i style="color: green;" class="fa-solid fa-check"></i>' : '<i style="color: red;" class="fa-solid fa-xmark"></i>'%> - <%- a %></label>
                     </div>
                 <% } else { %> 
                     <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio<%= i%>" name="customRadio" class="custom-control-input" <%= data.answers.includes(i)? "checked": "" %>>
-                        <label class="custom-control-label" for="customRadio<%= i%>"><%- a %></label>
+                        <input type="radio" id="customRadio<%= i%>" name="customRadio" class="custom-control-input" <%= data.answers.user.includes(i)? "checked": "" %>>
+                        <label class="custom-control-label" for="customRadio<%= i%>"><%- data.answers.correct.find(d => d.includes(a))? '<i style="color: green;" class="fa-solid fa-check"></i>' : '<i style="color: red;" class="fa-solid fa-xmark"></i>'%> - <%- a %></label>
                     </div>
                 <% }}) %> 
             </div>

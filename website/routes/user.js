@@ -176,7 +176,6 @@ router.post('/:module/evaluations/:id', async (req, res) => {
             //compare both
             if (userAnswer == correctAnswer) score++
            
-            
 
         }
 
