@@ -183,5 +183,72 @@ router.post('/classes/:module/results', async (req, res) => {
     return res.redirect(`/prof/classes/${encodeURIComponent(module)}/results`)
 })
 
+router.get('/classes/:module/results/:id', async (req, res) => {
+    let { module, id } = req.params
+
+    //get all the tests from the id
+    var sql = `SELECT * FROM user_evaluations WHERE evaluation_id = ?`
+    var data = await global.db(sql, [id])
+
+    //get users username from users table
+    for (let i = 0; i < data.length; i++) {
+        var sql = `SELECT username FROM users WHERE id = ?`
+        var username = await global.db(sql, [data[i].user_id])
+        data[i].username = username[0].username
+        data[i].module = module
+    }
+
+    //render the page
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'result.ejs'), { data, user: req.session.user })
+
+})
+
+router.post('/classes/:module/results/:id', async (req, res) => {
+    let { module, id } = req.params
+
+    let { action } = req.body
+
+    if( action == 'grade') {
+        let { grade, user_id } = req.body
+
+        var sql = `UPDATE user_evaluations SET score = ? WHERE user_id = ? AND evaluation_id = ?`
+        await global.db(sql, [grade, user_id, id])
+
+        req.session.success = 'Nota alterada com sucesso!'
+    }   
+
+    return res.redirect(`/prof/classes/${encodeURIComponent(module)}/results/${id}`)
+
+})
+
+router.get('/classes/:module/results/:id/:user', async (req, res) => {
+    let { module, id, user } = req.params
+
+    //get all the tests from the id
+    var sql = `SELECT * FROM user_evaluations WHERE evaluation_id = ? AND user_id = ?`
+    var sqlData = await global.db(sql, [id, user])
+
+    let page;
+
+    if(req.query.page) page = req.query.page
+    else page = 0
+
+    let data = {
+        questions: sqlData[0].questions[page],
+        answers: sqlData[0].answers[page],
+        time: sqlData[0].data[page]
+    }
+
+    let urlData = {
+        module,
+        id,
+        user
+    }
+
+    let max = sqlData[0].questions.length
+
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'q_main.ejs'), { data, user: req.session.user, page, max, urlData })
+
+})
 
 module.exports = router

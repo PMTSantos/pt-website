@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Sistema de Aprendizagens - Testes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="/static/dash/img/logo/VALDOTXUBA.png" rel="icon">
+    <link href="/static/dash/img/logo/VALDOTXUBA.png" rel="apple-touch-icon">
+    <link href="/static/dash/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background-color: #695CFE;
+        font-family: sans-serif;
+    }
+
+    .box {
+        width: 1000px;
+        height: 300px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgb(0, 6, 89);
+        padding: 10px;
+
+    }
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    :root {
+        --select-border: #777;
+        --select-focus: blue;
+        --select-arrow: var(--select-border);
+    }
+
+    select {
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        padding: 0 1em 0 0;
+        margin: 0;
+        width: 100%;
+        font-family: inherit;
+        font-size: inherit;
+        cursor: inherit;
+        line-height: inherit;
+        z-index: 1;
+        outline: none;
+    }
+
+    select::-ms-expand {
+        display: none;
+    }
+
+    .select {
+        display: grid;
+        grid-template-areas: "select";
+        align-items: center;
+        position: relative;
+        min-width: 15ch;
+        max-width: 30ch;
+        border: 1px solid var(--select-border);
+        border-radius: 0.25em;
+        padding: 0.25em 0.5em;
+        font-size: 1.25rem;
+        cursor: pointer;
+        line-height: 1.1;
+        background-color: #fff;
+        background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+    }
+
+    .select select,
+    .select::after {
+        grid-area: select;
+    }
+
+    .select:not(.select--multiple)::after {
+        content: "";
+        justify-self: end;
+        width: 0.8em;
+        height: 0.5em;
+        background-color: var(--select-arrow);
+        clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    }
+
+    select:focus+.focus {
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        border: 2px solid var(--select-focus);
+        border-radius: inherit;
+    }
+
+    select[multiple] {
+        padding-right: 0;
+        height: 6rem;
+    }
+
+    select[multiple] option {
+        white-space: normal;
+        outline-color: var(--select-focus);
+    }
+
+    .select--disabled {
+        cursor: not-allowed;
+        background-color: #eee;
+        background-image: linear-gradient(to top, #ddd, #eee 33%);
+    }
+
+    label {
+        font-size: 1.125rem;
+        font-weight: 500;
+    }
+
+    .select+label {
+        margin-top: 2rem;
+    }
+
+    .button {
+        display: inline-block;
+        border-radius: 4px;
+        background-color: #695CFE;
+        border: none;
+        color: #FFFFFF;
+        text-align: center;
+        font-size: 16px;
+        padding: 20px;
+        width: 150px;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .button span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+    }
+
+    .button span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+
+    .button:hover span {
+        padding-right: 25px;
+    }
+
+    .button:hover span:after {
+        opacity: 1;
+        right: 0;
+    }
+
+    .topright {
+        position: absolute;
+        top: 8px;
+        right: 16px;
+        font-size: 18px;
+    }
+
+    p {
+        font-size:20px;
+    }
+</style>
+
+<body>
+
+
+        <div class="topright">
+            <p id="time" style="color: #fff;">Tempo: <%= data.time.tempo %> </p>
+            <p id="time" style="color: #fff;">Nº de Pausas: <%= data.time.pausas %></p>
+            <p id="time" style="color: #fff;">Tempo Total das Pausas: <%= data.time.tempoPausas || 'N/A' %></p>
+        </div>
+        <div class="box">
+            <br>
+            <div id="taquestion0_87" class="block question iDevice_content">
+                    <%- data.questions.questions %>
+                
+            </div>
+            <div class="form-group">
+                <% data.questions.answers.forEach((a, i) => { %> 
+                    <% if(data.questions.hasMultiple){ %> 
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck<%= i %>" name="resp" <%= data.answers.includes(i)? "checked": "" %> >
+                        <label class="custom-control-label" for="customCheck<%= i %>"><%- a %></label>
+                    </div>
+                <% } else { %> 
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="customRadio<%= i%>" name="customRadio" class="custom-control-input" <%= data.answers.includes(i)? "checked": "" %>>
+                        <label class="custom-control-label" for="customRadio<%= i%>"><%- a %></label>
+                    </div>
+                <% }}) %> 
+            </div>
+            <br>
+            <% let continueUrl = `/prof/classes/${encodeURIComponent(urlData.module)}/results/${urlData.id}/${urlData.user}?page=${parseInt(page)+1}` %>
+            <% let finalUrl = `/prof/classes/${encodeURIComponent(urlData.module)}/results/${urlData.id}` %> 
+            <button type="button" name="action" onclick="window.location = '<%= (parseInt(page) == max-1)? finalUrl : continueUrl %>';" class="button" style="vertical-align:middle"><span><%= (parseInt(page) == max-1)? "Finalizar":"Continuar" %></span></button>
+            <br>
+
+        </div>
+</body>
+
+</html>
