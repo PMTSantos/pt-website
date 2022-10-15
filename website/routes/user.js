@@ -169,6 +169,30 @@ router.post('/:module/evaluations/:id', async (req, res) => {
             let correctIndex = evaluations.find(e => e.question == sqlData[0].questions[i].questions).correct
             let answerIndex = sqlData[0].answers[i]
 
+            if(correctIndex.length > 1) {
+                let newAnswerIndex = answerIndex.split(/,/g)
+                newAnswerIndex.forEach((u, j) => {
+                    newAnswerIndex[j] = sqlData[0].questions[i].answers[u]
+                });
+
+                if(correctIndex.length == newAnswerIndex.length) {
+                    
+                    let correct = 0;
+                    for (let j = 0; j < correctIndex.length; j++) {
+                        let correctAnswerValue = evaluations.find(e => e.question == sqlData[0].questions[i].questions).answers[correctIndex[j]]
+                        //find if the correct answer is in the user answers
+                        let userAnswerValue = newAnswerIndex.find(e => e == correctAnswerValue)
+
+                        if(correctAnswerValue == userAnswerValue) correct++
+                    }
+
+                    if(correct == correctIndex.length) score++
+
+                    continue
+                }
+                continue
+            }
+
             //get user answer value from questions column
             let userAnswer = sqlData[0].questions[i].answers[answerIndex]
             //get correct answer value from answers column
