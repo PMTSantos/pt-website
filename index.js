@@ -208,3 +208,5 @@ app.post('/register', async (req, res) => {
 app.use('/admin', restrict, authRole('admin'), require('./website/routes/admin'));
 app.use('/prof', restrict, authRole('professor'), require('./website/routes/teacher'));
 app.use('/aluno', restrict, authRole('aluno'), require('./website/routes/user'));
+
+//https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04 opção 3
