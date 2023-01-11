@@ -65,7 +65,7 @@ CREATE TABLE `evaluations` (
 	PRIMARY KEY (`id`) USING BTREE,
 	INDEX `module` (`module`) USING BTREE,
 	CONSTRAINT `evaluations_module` FOREIGN KEY (`module`) REFERENCES `modulos` (`turma`) ON UPDATE NO ACTION ON DELETE NO ACTION
-)
+);
 
 CREATE TABLE IF NOT EXISTS `user_evaluations` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
