@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 var session = require('express-session');
+const fileUpload = require('express-fileupload');
 require('ejs');
 var bodyParser = require('body-parser')
 const con = require("./handlers/mysql.js")
@@ -56,6 +57,8 @@ app.use(session({
 // parse application/json
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: false }));
+
+app.use(fileUpload());
 
 app.listen(80, () => {
     console.log('Application listening on port 80!');
