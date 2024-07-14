@@ -37,10 +37,11 @@
                         <form method="post">
                             <input type="hidden" name="id" value="<%= user.id %>">
                             
-                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#aproveModal" id="#myBtn" data-userid="<%= user.id %>" data-turma="<%= user.turma %>" data-perms="<%= user.perms %>" data-username="<%= user.username %>" data-email="<%= user.email %>" data-password="<%= user.password %>">
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#aproveModal" id="#myBtn" data-userid="<%= user.id %>" data-turma="<%= user.turma %>" data-perms="<%= user.perms %>" data-username="<%= user.username %>" data-email="<%= user.email %>">
                                 Editar
                             </button>
                             <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-userid="<%= user.id %>" data-perms="<%= user.perms %>" data-username="<%= user.username %>">Eliminar</button>
+                            
                         </form>
                     </td>
                 </tr>
@@ -165,7 +166,6 @@ $(document).ready(function () {
 
     var username = button.data('username');
     var email = button.data('email');
-    var password = button.data('password');
 
     if(turma.match(/[,]/g)) turma = turma.split(/[,]/g);
     else turma = [turma];
@@ -177,7 +177,6 @@ $(document).ready(function () {
         modal.find('#userID').val(recipient)
         modal.find('#username').val(username)
         modal.find('#email').val(email)
-        modal.find('#password').val(password)
 
         $("#select2Single").val(arr).trigger('change');
 

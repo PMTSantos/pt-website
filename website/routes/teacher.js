@@ -264,4 +264,17 @@ router.get('/classes/:module/results/:id/:user', async (req, res) => {
 
 })
 
+router.get('/stats', async (req, res) => {
+    var sql = `SELECT * FROM modulos`
+    var data = await global.db(sql)
+
+    var sql = `SELECT turma FROM users WHERE id = ${req.session.user.id}`
+    var turma = await global.db(sql)
+
+    let final = data.filter(d => turma[0].turma.includes(d.turma))
+
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stats.ejs'), { data: final, user: req.session.user })
+
+})
+
 module.exports = router
