@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const path = require('path')
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 router.get('/students', async (req, res) => {
     var sql = "SELECT * FROM users WHERE active = 1"
     let data = await global.db(sql)
@@ -32,8 +35,10 @@ router.post('/students', async (req, res) => {
         await global.db(sql, [username, email, (JSON.stringify(arr) || "[]"), perms, id])
 
         if (password != '') {
+            const hash = bcrypt.hashSync(password, saltRounds);
+
             var sql = `UPDATE users SET password = ? WHERE id = ?`
-            await global.db(sql, [password, id])
+            await global.db(sql, [hash, id])
         }
 
         req.session.success = 'Utilizador editado com sucesso!'

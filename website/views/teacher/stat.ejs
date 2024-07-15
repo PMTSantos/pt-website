@@ -1,0 +1,112 @@
+<%- include('../main.ejs')  %> 
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between justify-content-md-center">
+            <h3 class="m-0 font-weight-bold text-primary">Módulo: <%= module %></h3>
+        </div>
+
+  </div>
+</div>
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h5 class="m-0 font-weight-bold text-primary">Estatísticas de Visualização de Conteúdos</h5>
+        </div>
+
+        <% if(user_content_views.length > 0) { %>
+            <canvas id="user_content_views_chart" style="width: 25%; height: 25%;"></canvas>
+        <% } else { %>
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 text-secondary">Não existem dados para apresentar</h6>
+            </div>
+        <% } %>
+
+  </div>
+</div>
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h5 class="m-0 font-weight-bold text-primary">Estatísticas de Avaliações</h5>
+        </div>
+        <% if(user_evaluations.length > 0) { %>
+            <canvas id="user_evaluations_chart" style="width: 25%; height: 25%;"></canvas>
+        <% } else { %>
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 text-secondary">Não existem dados para apresentar</h6>
+            </div>
+        <% } %>
+
+  </div>
+</div>
+
+
+
+<%- include('../footer.ejs')  %> 
+
+<script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script>
+
+const u_c_v = (JSON.parse('<%- JSON.stringify(user_content_views) %>'));
+const u_e = (JSON.parse('<%- JSON.stringify(user_evaluations) %>'));
+
+console.log(u_c_v);
+console.log(u_e);
+
+   
+const xyValues = [
+  {x:50, y:7},
+  {x:60, y:8},
+  {x:70, y:8},
+  {x:80, y:9},
+  {x:90, y:9},
+  {x:100, y:9},
+  {x:110, y:10},
+  {x:120, y:11},
+  {x:130, y:14},
+  {x:140, y:14},
+  {x:150, y:10}
+];
+
+new Chart("user_content_views_chart", {
+  type: "scatter",
+  data: {
+    datasets: [{
+      pointRadius: 4,
+      pointBackgroundColor: "rgb(0,0,255)",
+      data: xyValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      xAxes: [{ticks: {min: 40, max:160}}],
+      yAxes: [{ticks: {min: 6, max:16}}],
+    }
+  }
+});
+
+new Chart("user_evaluations_chart", {
+  type: "scatter",
+  data: {
+    datasets: [{
+      pointRadius: 4,
+      pointBackgroundColor: "rgb(0,0,255)",
+      data: xyValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      xAxes: [{ticks: {min: 40, max:160}}],
+      yAxes: [{ticks: {min: 6, max:16}}],
+    }
+  }
+});
+</script>

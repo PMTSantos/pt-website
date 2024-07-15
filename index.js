@@ -7,6 +7,9 @@ var bodyParser = require('body-parser')
 const con = require("./handlers/mysql.js")
 require('./handlers/anticrash.js')();
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const app = express();
 
 var TGEIO =
@@ -168,9 +171,10 @@ app.post('/', async (req, res) => {
     let { email, ppw } = req.body;
     let { url } = req.query
 
-    let user = await global.db('SELECT * FROM users WHERE email = ? AND password = ?', [email, ppw]);
+    let user = await global.db('SELECT * FROM users WHERE email = ?', [email]);
 
-    if (user.length > 0) {
+
+    if (user.length > 0 && bcrypt.compareSync(ppw, user[0].password)) {
         if (user[0].active == '1') {
             req.session.user = user[0];
             res.redirect(url || '/dashboard');
@@ -191,7 +195,7 @@ app.post('/register', async (req, res) => {
     let user = await global.db('SELECT * FROM users WHERE email = ?', [email]);
 
     if (user.length > 0) {
-        let error = `Enderço de email em uso!`
+        let error = `Endereço de email em uso!`
         req.session.error = error;
         res.redirect('/register');
     }
@@ -201,7 +205,9 @@ app.post('/register', async (req, res) => {
         res.redirect('/register');
     }
     else {
-        await global.db('INSERT INTO users (username, email, password, perms, active) VALUES (?, ?, ?, "aluno", false)', [username, email, password]);
+        const hash = bcrypt.hashSync(password, saltRounds);
+
+        await global.db('INSERT INTO users (username, email, password, perms, active) VALUES (?, ?, ?, "aluno", false)', [username, email, hash]);
         let success = `Utilizador criado com sucesso! Aguarde que um administrador aprove a conta!`
         req.session.success = success;
         res.redirect('/');

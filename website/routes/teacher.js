@@ -274,7 +274,18 @@ router.get('/stats', async (req, res) => {
     let final = data.filter(d => turma[0].turma.includes(d.turma))
 
     return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stats.ejs'), { data: final, user: req.session.user })
+})
 
+router.get('/stats/:module', async (req, res) => {
+    let { module } = req.params
+
+    var sql = `SELECT * FROM user_content_views WHERE module = ?`
+    const user_content_views = await global.db(sql, [module])
+
+    sql = `SELECT * FROM user_evaluations AS ue JOIN module_evaluations AS me ON ue.evaluation_id = me.id WHERE me.module = ?`
+    const user_evaluations = await global.db(sql, [module])
+
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat.ejs'), { user_content_views, user_evaluations, module, user: req.session.user })
 })
 
 module.exports = router
