@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS `modulos` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `turma` JSON NOT NULL DEFAULT ( JSON_ARRAY() ),
   `perms` VARCHAR(45) NOT NULL DEFAULT 'aluno',
