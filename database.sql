@@ -13,9 +13,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` VARCHAR(255) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `turma` JSON NOT NULL DEFAULT ( JSON_ARRAY() ),
-  `perms` VARCHAR(45) NOT NULL DEFAULT 'aluno',
+  `perms` ENUM('aluno', 'professor', 'admin') NOT NULL DEFAULT 'aluno',
   `active` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`));
+  PRIMARY KEY (`id`)
+);
+
 
 CREATE TABLE `module_content` (
 	`id` BIGINT(19) NOT NULL AUTO_INCREMENT,
