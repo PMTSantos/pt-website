@@ -279,13 +279,206 @@ router.get('/stats', async (req, res) => {
 router.get('/stats/:module', async (req, res) => {
     let { module } = req.params
 
-    var sql = `SELECT * FROM user_content_views WHERE module = ?`
+    var sql = `SELECT ucv.data, ucv.module, mc.content_title FROM user_content_views AS ucv JOIN module_content AS mc ON ucv.content_id = mc.id WHERE ucv.module = ?`
     const user_content_views = await global.db(sql, [module])
 
-    sql = `SELECT * FROM user_evaluations AS ue JOIN module_evaluations AS me ON ue.evaluation_id = me.id WHERE me.module = ?`
+    sql = `SELECT * FROM user_evaluations AS ue JOIN evaluations AS me ON ue.evaluation_id = me.id WHERE me.module = ?`
     const user_evaluations = await global.db(sql, [module])
 
-    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat.ejs'), { user_content_views, user_evaluations, module, user: req.session.user })
+    let avg = {
+        contentReadingTime: 0,
+        contentPauses: 0,
+        contentPausesTime: 0,
+        testsTime: 0,
+        testsPauses: 0,
+        testsPausesTime: 0
+    }
+
+    function secondsToHms(d) {
+        d = Number(d);
+        let h = Math.floor(d / 3600);
+        let m = Math.floor(d % 3600 / 60);
+        let s = Math.floor(d % 3600 % 60);
+    
+        // Adding leading zeros if the number is less than 10
+        let hDisplay = h < 10 ? '0' + h : h;
+        let mDisplay = m < 10 ? '0' + m : m;
+        let sDisplay = s < 10 ? '0' + s : s;
+        return hDisplay + ':' + mDisplay + ':' + sDisplay;
+    }
+    
+    user_content_views.forEach((e) => {
+
+        avg.contentPauses += parseInt(e.data.pausas)
+    
+        //tempo e tempoPausas hh:mm:ss
+        let tempo = e.data.tempo == '' ? '00:00:00'.split(':') : e.data.tempo.split(':')
+        let tempoPausas = e.data.tempoPausas == '' ? '00:00:00'.split(':') : e.data.tempoPausas.split(':')
+    
+        avg.contentReadingTime += parseInt(tempo[0]) * 3600 + parseInt(tempo[1]) * 60 + parseInt(tempo[2])
+        avg.contentPausesTime += parseInt(tempoPausas[0]) * 3600 + parseInt(tempoPausas[1]) * 60 + parseInt(tempoPausas[2])
+    })
+    
+    let countContentViews = user_content_views.length;
+
+    avg.contentReadingTime = avg.contentReadingTime / countContentViews;
+    avg.contentPausesTime = avg.contentPausesTime / countContentViews;
+    avg.contentPauses = avg.contentPauses / countContentViews;
+
+    // Convert avg.contentReadingTime and avg.contentPausesTime to hh:mm:ss
+    avg.contentReadingTime = secondsToHms(avg.contentReadingTime);
+    avg.contentPausesTime = secondsToHms(avg.contentPausesTime);
+
+    let countEval = 0;
+
+    user_evaluations.forEach((e) => {
+
+        e.data.forEach((f) =>{
+            avg.testsPauses += parseInt(f.pausas)
+
+            //tempo e tempoPausas hh:mm:ss
+            let tempo = f.tempo == '' ? '00:00:00'.split(':') : f.tempo.split(':')
+            let tempoPausas = f.tempoPausas == '' ? '00:00:00'.split(':') : f.tempoPausas.split(':')
+
+           avg.testsTime += parseInt(tempo[0]) * 3600 + parseInt(tempo[1]) * 60 + parseInt(tempo[2])
+            avg.testsPausesTime += parseInt(tempoPausas[0]) * 3600 + parseInt(tempoPausas[1]) * 60 + parseInt(tempoPausas[2])
+
+            countEval++;
+        })
+    })
+
+    avg.testsTime = avg.testsTime / countEval;
+    avg.testsPausesTime = avg.testsPausesTime / countEval;
+
+    // Convert avg.testsTime and avg.testsPausesTime to hh:mm:ss
+    avg.testsTime = secondsToHms(avg.testsTime);
+    avg.testsPausesTime = secondsToHms(avg.testsPausesTime);
+
+    let rawContentData = []
+
+    user_content_views.forEach((e) => {
+        let index = rawContentData.findIndex((f) => f.content_title == e.content_title)
+        if (index == -1) {
+            rawContentData.push({
+                content_title: e.content_title,
+                totalReadingTime: 0, //
+                avgReadingTime: 0,
+                totalPauses: 0, //
+                avgPauses: 0,
+                totalPausesTime: 0, //
+                avgPauseTime: 0,
+                count: 0
+            })
+            index = rawContentData.length - 1
+        }
+
+        rawContentData[index].count++
+        rawContentData[index].totalReadingTime += parseInt(e.data.tempo.split(':')[0]) * 3600 + parseInt(e.data.tempo.split(':')[1]) * 60 + parseInt(e.data.tempo.split(':')[2])
+        rawContentData[index].totalPauses += parseInt(e.data.pausas)
+        rawContentData[index].totalPausesTime += parseInt(e.data.tempoPausas.split(':')[0]) * 3600 + parseInt(e.data.tempoPausas.split(':')[1]) * 60 + parseInt(e.data.tempoPausas.split(':')[2])
+    })
+
+    rawContentData.forEach((e) => {
+        e.avgReadingTime = e.totalReadingTime / e.count
+        e.avgPauseTime = e.totalPausesTime / e.count
+        e.avgPauses = e.totalPauses / e.count
+
+        e.totalReadingTime = secondsToHms(e.totalReadingTime)
+        e.totalPausesTime = secondsToHms(e.totalPausesTime)
+        e.avgReadingTime = secondsToHms(e.avgReadingTime)
+        e.avgPauseTime = secondsToHms(e.avgPauseTime)
+    })
+
+    
+    async function processEvaluations() {
+        let rawQuestionData = []
+        for (const evaluation of user_evaluations) {
+            var qIndex = 0;
+            for (const question of evaluation.questions) {
+                let index = rawQuestionData.findIndex((q) => q.questionText == question.questions);
+
+                if (index == -1) {
+                    rawQuestionData.push({
+                        questionText: question.questions,
+                        totalReadingTime: 0,
+                        avgReadingTime: 0,
+                        totalPauses: 0,
+                        avgPauses: 0,
+                        totalPausesTime: 0,
+                        avgPauseTime: 0,
+                        count: 0,
+                        successCount: 0,
+                        successRate: 0,
+                        attempts: 0
+                    });
+                    index = rawQuestionData.length - 1;
+                }
+    
+                rawQuestionData[index].count++;
+                rawQuestionData[index].attempts++;
+    
+                let data = evaluation.data[qIndex];
+                if (data) {
+                    rawQuestionData[index].totalReadingTime += parseInt(data.tempo.split(':')[0]) * 3600 + parseInt(data.tempo.split(':')[1]) * 60 + parseInt(data.tempo.split(':')[2]);
+                    rawQuestionData[index].totalPauses += parseInt(data.pausas);
+                    rawQuestionData[index].totalPausesTime += parseInt(data.tempoPausas.split(':')[0]) * 3600 + parseInt(data.tempoPausas.split(':')[1]) * 60 + parseInt(data.tempoPausas.split(':')[2]);
+                }
+    
+            sql = 'SELECT answers, correct FROM module_evaluations WHERE question = ? AND module = ?'
+            let correctData = await global.db(sql, [question.questions, module])
+
+            let curAnswersIndex = evaluation.answers[qIndex].split(',').map((e) => parseInt(e));
+            let correctAnswersIndex = correctData[0].correct;
+            let correctAnswers = [];
+
+            correctAnswersIndex.forEach((e) => {
+                correctAnswers.push(correctData[0].answers[e]);
+            });
+
+            let curAnswers = [];
+            curAnswersIndex.forEach((e) => {
+                curAnswers.push(question.answers[e]);
+            });
+
+            if (curAnswers.length == correctAnswers.length) {
+                let correct = 0;
+                for (let i = 0; i < correctAnswers.length; i++) {
+                    let correctAnswerValue = correctAnswers[i];
+                    let userAnswerValue = curAnswers.find((e) => e == correctAnswerValue);
+                    if (userAnswerValue) {
+                        correct++;
+                    }
+                }
+    
+                if (correct == correctAnswers.length && data) {
+                    rawQuestionData[index].successCount++;
+                }
+            }
+            qIndex++;
+            }
+        }
+    
+        // Calculate averages and convert times to hh:mm:ss format
+        rawQuestionData.forEach((q) => {
+            q.avgReadingTime = q.totalReadingTime / q.count;
+            q.avgPauseTime = q.totalPausesTime / q.count;
+            q.avgPauses = q.totalPauses / q.count;
+    
+            q.totalReadingTime = secondsToHms(q.totalReadingTime);
+            q.totalPausesTime = secondsToHms(q.totalPausesTime);
+            q.avgReadingTime = secondsToHms(q.avgReadingTime);
+            q.avgPauseTime = secondsToHms(q.avgPauseTime);
+    
+            q.successRate = (q.successCount / q.attempts) * 100; // Percentage
+        });
+    
+        return rawQuestionData;
+    }
+    
+    // Call the function to process evaluations
+    let rawQuestionData = await processEvaluations();
+
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat.ejs'), { avg, rawContentData, rawQuestionData, module, user: req.session.user })
 })
 
 module.exports = router
