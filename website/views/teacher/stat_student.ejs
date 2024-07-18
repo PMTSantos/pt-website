@@ -1,44 +1,40 @@
-<%- include('../main.ejs')  %> 
+<%- include('../main.ejs') %> 
 
 <div class="col-lg-12">
     <div class="card mb-4">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Estatísticas Por Módulo</h6>
-        </div>
-
-    
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Lista de Alunos Inscritos</h6>
+      </div>
       <div class="table-responsive p-3">
         <% if(data.length > 0) { %> 
         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
           <thead class="thead-light">
             <tr>
-              <th>Módulo</th>
-              <th>Nome</th>
+              <th>Aluno</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tfoot>
             <tr>
               <th>Módulo</th>
-              <th>Nome</th>
               <th>Ações</th>
             </tr>
           </tfoot>
           <tbody>
-            <%data.forEach(turma => { %>
+            <%data.forEach(al => { %>
                 <tr>
-                    <td><%= turma.turma %></td>
-                    <td><%= turma.nome %></td>
+                    <td><%= al.username %></td>
                     <td>
-                        <a href="/prof/stats/<%= encodeURIComponent(turma.turma) %>" class="btn btn-primary">Estatísticas Gerais</a>
-                        <a href="/prof/stats/<%= encodeURIComponent(turma.turma) %>/students" class="btn btn-primary">Estatísticas de Alunos</a>
+                        <button class="btn btn-primary">
+                          Ver Estatísticas
+                        </button>
                     </td>
                 </tr>
             <% }) %>
           </tbody>
         </table>
         <% } else { %>
-            <p>Não tem nenhum módulo designado</p>
+            <p>Não existe nenhum aluno inscrito no módulo</p>
         <% } %>
       </div>
     </div>
@@ -46,9 +42,7 @@
 </div>
 
 
-
-<%- include('../footer.ejs')  %> 
-
+<%- include('../footer.ejs') %> 
 <script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
@@ -57,9 +51,10 @@
     $(document).ready(function () {
         //
         $('#dataTableHover').DataTable({
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
-        },
-    });
+          language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+          },
+        
+        });
 });
 </script>

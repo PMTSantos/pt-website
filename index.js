@@ -7,6 +7,9 @@ var bodyParser = require('body-parser')
 const con = require("./handlers/mysql.js")
 require('./handlers/anticrash.js')();
 
+var speakeasy = require("speakeasy");
+var qrcode = require("qrcode");
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -85,7 +88,13 @@ function restrict(req, res, next) {
     } else {
         let error = `Acesso negado!`
         req.session.error = error;
-        res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+        if (req.originalUrl.includes('2fa') && req.originalUrl.includes('url')) {
+            let url = req.originalUrl.split('?url=')[1]
+            res.redirect(`/?url=${encodeURIComponent(url)}`);
+        }
+        else {
+            res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+        }
     }
 }
 
@@ -147,6 +156,7 @@ app.get('/', (req, res) => {
         </div>`
 
     else if (query.error) st = `<div class="alert"><span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>${query.error}</div>`
+
     res.render(path.join(__dirname, 'website', 'views', 'login.ejs'), { st });
 })
 
@@ -173,11 +183,14 @@ app.post('/', async (req, res) => {
 
     let user = await global.db('SELECT * FROM users WHERE email = ?', [email]);
 
-
     if (user.length > 0 && bcrypt.compareSync(ppw, user[0].password)) {
         if (user[0].active == '1') {
             req.session.user = user[0];
-            res.redirect(url || '/dashboard');
+            if(user[0].tfa != null) {
+                res.redirect('/2fa?url=' + url);
+            } else {
+                res.redirect(url || '/dashboard');
+            }
         } else {
             res.redirect(`/?error=` + encodeURIComponent('Conta Pendente para Aprovação!'));
         }
@@ -211,6 +224,87 @@ app.post('/register', async (req, res) => {
         let success = `Utilizador criado com sucesso! Aguarde que um administrador aprove a conta!`
         req.session.success = success;
         res.redirect('/');
+    }
+})
+
+app.get('*/getQRCode', restrict, async (req, res) => {
+    let secret = speakeasy.generateSecret({ length: 20, name: 'Val do TGEIO20 - LMS' });
+
+    console.log(secret.base32);
+
+    qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
+      
+        res.json({ secret: secret.base32, data_url: data_url });
+      });
+})
+
+app.post('*/verify', async (req, res) => {
+    let { secret, token } = req.body;
+    let { id } = req.session.user;
+
+    console.log("secret", secret);
+    console.log("token", token);
+
+    let verified = speakeasy.totp.verify({
+        secret: secret,
+        encoding: 'base32',
+        token: token
+    });
+
+    res.json({ verified });
+    
+    if(verified) {
+        await global.db('UPDATE users SET tfa = ? WHERE id = ?', [secret, id]);
+    }
+})
+
+app.post('*/remove2fa',restrict, async (req, res) => {
+    let { id } = req.session.user;
+
+    await global.db('UPDATE users SET tfa = NULL WHERE id = ?', [id]);
+
+    res.json({ success: true });
+})
+
+app.post('*/updateSettings', restrict, async(req, res) => {
+    let { id } = req.session.user;
+    let { username } = req.body;
+
+    await global.db('UPDATE users SET username = ? WHERE id = ?', [username, id]);
+    req.session.user.username = username;
+
+    res.json({ success: true });
+})
+
+app.get('/2fa', restrict, async (req, res) => {
+    let st;
+
+    res.render(path.join(__dirname, 'website', 'views', '2fa.ejs'), { st });
+})
+
+app.post('/2fa', restrict, async (req, res) => {
+    let { token } = req.body;
+    let {  url }   = req.query;
+    let { tfa } = req.session.user;
+
+
+    let verified = speakeasy.totp.verify({
+        secret: tfa,
+        encoding: 'base32',
+        token: token
+    });
+
+    if(verified) {
+       if(url != undefined && url != '' && url != null) {
+            res.redirect(decodeURIComponent(url));
+       }
+         else {
+                res.redirect('/dashboard');
+         }
+    } else {
+        let error = `Código inválido! Tente novamente!`
+        req.session.error = error;
+        res.redirect('/2fa');
     }
 })
 

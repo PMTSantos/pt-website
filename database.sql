@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `turma` JSON NOT NULL DEFAULT ( JSON_ARRAY() ),
   `perms` ENUM('aluno', 'professor', 'admin') NOT NULL DEFAULT 'aluno',
   `active` TINYINT(1) NOT NULL DEFAULT '0',
+  `tfa` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 

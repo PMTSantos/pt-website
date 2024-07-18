@@ -481,4 +481,14 @@ router.get('/stats/:module', async (req, res) => {
     return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat.ejs'), { avg, rawContentData, rawQuestionData, module, user: req.session.user })
 })
 
+router.get('/stats/:module/students', async (req, res) => {
+    let { module } = req.params
+
+    var sql = `SELECT id, username FROM users WHERE perms = 'aluno' AND JSON_CONTAINS(turma, '"${module}"');`
+    var data = await global.db(sql)
+
+    //console.log(data)
+    return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat_student.ejs'), { data, module, user: req.session.user })
+})
+
 module.exports = router
