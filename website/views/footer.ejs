@@ -61,13 +61,8 @@
                       <div class="mb-3 row">
                         <label for="password" class="col-auto col-form-label">Autenticação em 2 Fatores</label>
                         <div class="col-auto">
-                          <% if (user.tfa != null) { %>
-                            <button type="button" class="btn btn-danger" onclick="remove2fa()">Remover</button>
-                          <% } else { %>
-                          <button type="button" class="btn btn-success" onclick="getQrCode()" >
-                            Ativar
-                          </button>
-                          <% } %>
+                          <button type="button" id="2fa-remove" class="btn btn-danger" style="display: <%= user.tfa != null? 'block' : 'none' %>;" onclick="remove2fa()">Remover</button>
+                          <button type="button" id="2fa-activate" class="btn btn-success" style="display: <%= user.tfa == null? 'block' : 'none' %>;" onclick="getQrCode()" >Ativar</button>
                           <div class=" align-items-start" id="2fa_settings" style="display: none;">
 
                             <img src="" id="qrcodeplacer">
@@ -92,8 +87,19 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancelar</button>
-                <a href="#" class="btn btn-primary" onclick="updateSettings()">Guardar</a>
+                <a href="#" class="btn btn-success" onclick="updateSettings()">Guardar</a>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div id="liveToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body">
+                Hello, world! This is a toast message.
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
           </div>
         </div>
@@ -152,9 +158,13 @@
       .then(response => response.json())
       .then(data => {
         if(data.verified) {
-          alert('Código verificado com sucesso');
+          showToast('Código verificado com sucesso. 2FA Ativado!', 'success');
+          document.getElementById('2fa-activate').style.display = 'none';
+          document.getElementById('2fa-remove').style.display = 'block';
+          document.getElementById('2fa_settings').style.display = 'none';
+
         } else {
-          alert('Código inválido');
+          showToast('Código inválido', 'danger');
         }
       });
     }
@@ -169,9 +179,13 @@
       .then(response => response.json())
       .then(data => {
         if(data.success) {
-          alert('Autenticação em 2 Fatores removida com sucesso');
+          showToast('Autenticação em 2 Fatores removida com sucesso', 'success');
+
+          document.getElementById('2fa-activate').style.display = 'block';
+          document.getElementById('2fa-remove').style.display = 'none';
+
         } else {
-          alert('Erro ao remover autenticação em 2 Fatores');
+          showToast('Erro ao remover autenticação em 2 Fatores', 'danger');
         }
       });
     }
@@ -190,12 +204,33 @@
       .then(response => response.json())
       .then(data => {
         if(data.success) {
-          alert('Definições atualizadas com sucesso');
+          showToast('Definições atualizadas com sucesso', 'success');
+          document.getElementById('user-username').innerText = username;
         } else {
-          alert('Erro ao atualizar definições');
+          showToast('Erro ao atualizar definições', 'danger');
         }
       });
     }
+
+    function showToast(str, type) {
+      const toastLiveExample = document.getElementById('liveToast')
+
+      if(type == 'success') {
+        toastLiveExample.classList.remove('text-bg-danger');
+        toastLiveExample.classList.add('text-bg-success');
+      } else {
+        toastLiveExample.classList.remove('text-bg-success');
+        toastLiveExample.classList.add('text-bg-danger');
+      }
+
+      toastLiveExample.querySelector('.toast-body').innerText = str;
+  
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastBootstrap.show()
+        
+      
+    }
+
 
 
   </script>

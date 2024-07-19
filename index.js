@@ -83,7 +83,7 @@ function authRole(role) {
 }
 
 function restrict(req, res, next) {
-    if (req.session.user) {
+    if (req.session.user && (req.session.user.tfaL == true || req.originalUrl.includes('2fa'))) {
         next();
     } else {
         let error = `Acesso negado!`
@@ -187,6 +187,7 @@ app.post('/', async (req, res) => {
         if (user[0].active == '1') {
             req.session.user = user[0];
             if(user[0].tfa != null) {
+                req.session.user.tfaL = false;
                 res.redirect('/2fa?url=' + url);
             } else {
                 res.redirect(url || '/dashboard');
@@ -230,8 +231,6 @@ app.post('/register', async (req, res) => {
 app.get('*/getQRCode', restrict, async (req, res) => {
     let secret = speakeasy.generateSecret({ length: 20, name: 'Val do TGEIO20 - LMS' });
 
-    console.log(secret.base32);
-
     qrcode.toDataURL(secret.otpauth_url, function(err, data_url) {
       
         res.json({ secret: secret.base32, data_url: data_url });
@@ -241,9 +240,6 @@ app.get('*/getQRCode', restrict, async (req, res) => {
 app.post('*/verify', async (req, res) => {
     let { secret, token } = req.body;
     let { id } = req.session.user;
-
-    console.log("secret", secret);
-    console.log("token", token);
 
     let verified = speakeasy.totp.verify({
         secret: secret,
@@ -262,6 +258,8 @@ app.post('*/remove2fa',restrict, async (req, res) => {
     let { id } = req.session.user;
 
     await global.db('UPDATE users SET tfa = NULL WHERE id = ?', [id]);
+
+    req.session.user.tfa = null;
 
     res.json({ success: true });
 })
@@ -284,7 +282,7 @@ app.get('/2fa', restrict, async (req, res) => {
 
 app.post('/2fa', restrict, async (req, res) => {
     let { token } = req.body;
-    let {  url }   = req.query;
+    let { url }   = req.query;
     let { tfa } = req.session.user;
 
 
@@ -295,6 +293,7 @@ app.post('/2fa', restrict, async (req, res) => {
     });
 
     if(verified) {
+        req.session.user.tfaL = true;
        if(url != undefined && url != '' && url != null) {
             res.redirect(decodeURIComponent(url));
        }
