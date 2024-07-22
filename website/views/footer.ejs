@@ -126,6 +126,11 @@
  <!--<script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>-->
 
   <script>
+
+    let notification = document.getElementById('notification_toast');
+    const notifyBootstrap = bootstrap.Toast.getOrCreateInstance(notification)
+    notifyBootstrap.show()
+
    function getQrCode() {
       fetch('/getQRCode', {
         method: 'get',

@@ -3,7 +3,11 @@
 <div class="col-lg-12">
     <div class="card mb-4 rounded">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between justify-content-md-center">
-            <h3 class="m-0 font-weight-bold text-primary">Módulo: <%= module %></h3>
+            <h3 class="m-0 font-weight-bold text-primary">Módulo: <%= module %>
+            <% if (rawQuestionData == false) { %>
+             | Utilizador: <%= username %>
+            <% } %>
+            </h3>
         </div>
 
   </div>
@@ -165,13 +169,16 @@
   </div>
 </div>
 
+<% if(rawQuestionData == false) { %>
+<% } else { %>
+
 <div class="col-lg-12 mt-n1">
   <div class="card mb-4">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           <h5 class="m-0 font-weight-bold text-primary">Estatísticas de Perguntas</h5>
       </div>
 
-      <% if(rawContentData.length > 0) { %>
+      <% if(rawQuestionData.length > 0) { %>
         <div class="table-responsive p-3">
 
         <table class="table align-items-center table-flush table-hover" id="dataTableHover">
@@ -227,6 +234,7 @@
 
 </div>
 </div>
+<% } %>
 
 
 <%- include('../footer.ejs')  %> 

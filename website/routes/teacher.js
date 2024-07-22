@@ -276,6 +276,19 @@ router.get('/stats', async (req, res) => {
     return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stats.ejs'), { data: final, user: req.session.user })
 })
 
+function secondsToHms(d) {
+    d = Number(d);
+    let h = Math.floor(d / 3600);
+    let m = Math.floor(d % 3600 / 60);
+    let s = Math.floor(d % 3600 % 60);
+
+    // Adding leading zeros if the number is less than 10
+    let hDisplay = h < 10 ? '0' + h : h;
+    let mDisplay = m < 10 ? '0' + m : m;
+    let sDisplay = s < 10 ? '0' + s : s;
+    return hDisplay + ':' + mDisplay + ':' + sDisplay;
+}
+
 router.get('/stats/:module', async (req, res) => {
     let { module } = req.params
 
@@ -294,19 +307,6 @@ router.get('/stats/:module', async (req, res) => {
         testsPausesTime: 0
     }
 
-    function secondsToHms(d) {
-        d = Number(d);
-        let h = Math.floor(d / 3600);
-        let m = Math.floor(d % 3600 / 60);
-        let s = Math.floor(d % 3600 % 60);
-    
-        // Adding leading zeros if the number is less than 10
-        let hDisplay = h < 10 ? '0' + h : h;
-        let mDisplay = m < 10 ? '0' + m : m;
-        let sDisplay = s < 10 ? '0' + s : s;
-        return hDisplay + ':' + mDisplay + ':' + sDisplay;
-    }
-    
     user_content_views.forEach((e) => {
 
         avg.contentPauses += parseInt(e.data.pausas)
@@ -484,11 +484,121 @@ router.get('/stats/:module', async (req, res) => {
 router.get('/stats/:module/students', async (req, res) => {
     let { module } = req.params
 
-    var sql = `SELECT id, username FROM users WHERE perms = 'aluno' AND JSON_CONTAINS(turma, '"${module}"');`
+    var sql = `SELECT id, username FROM users WHERE JSON_CONTAINS(turma, '"${module}"');`
     var data = await global.db(sql)
 
     //console.log(data)
     return res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat_student.ejs'), { data, module, user: req.session.user })
+})
+
+router.get('/stats/:module/students/:id', async (req, res) => {
+    var { module, id } = req.params
+
+    var sql = `SELECT * FROM user_content_views AS ucv JOIN module_content AS mc ON ucv.content_id = mc.id WHERE ucv.user_id = ? AND mc.module = ?`
+    var user_content_views = await global.db(sql, [id, module])
+
+    sql = `SELECT * FROM user_evaluations AS ue JOIN evaluations AS e ON ue.evaluation_id = e.id WHERE ue.user_id = ? AND e.module = ?`
+    var user_evaluations = await global.db(sql, [id, module])
+
+    let avg = {
+        contentReadingTime: 0,
+        contentPauses: 0,
+        contentPausesTime: 0,
+        testsTime: 0,
+        testsPauses: 0,
+        testsPausesTime: 0
+    }
+
+    user_content_views.forEach((e) => {
+
+        avg.contentPauses += parseInt(e.data.pausas)
+    
+        //tempo e tempoPausas hh:mm:ss
+        let tempo = e.data.tempo == '' ? '00:00:00'.split(':') : e.data.tempo.split(':')
+        let tempoPausas = e.data.tempoPausas == '' ? '00:00:00'.split(':') : e.data.tempoPausas.split(':')
+    
+        avg.contentReadingTime += parseInt(tempo[0]) * 3600 + parseInt(tempo[1]) * 60 + parseInt(tempo[2])
+        avg.contentPausesTime += parseInt(tempoPausas[0]) * 3600 + parseInt(tempoPausas[1]) * 60 + parseInt(tempoPausas[2])
+    })
+    
+    let countContentViews = user_content_views.length;
+
+    avg.contentReadingTime = avg.contentReadingTime / countContentViews;
+    avg.contentPausesTime = avg.contentPausesTime / countContentViews;
+    avg.contentPauses = avg.contentPauses / countContentViews;
+
+    // Convert avg.contentReadingTime and avg.contentPausesTime to hh:mm:ss
+    avg.contentReadingTime = secondsToHms(avg.contentReadingTime);
+    avg.contentPausesTime = secondsToHms(avg.contentPausesTime);
+
+    let countEval = 0;
+
+    user_evaluations.forEach((e) => {
+
+        e.data.forEach((f) =>{
+            avg.testsPauses += parseInt(f.pausas)
+
+            //tempo e tempoPausas hh:mm:ss
+            let tempo = f.tempo == '' ? '00:00:00'.split(':') : f.tempo.split(':')
+            let tempoPausas = f.tempoPausas == '' ? '00:00:00'.split(':') : f.tempoPausas.split(':')
+
+           avg.testsTime += parseInt(tempo[0]) * 3600 + parseInt(tempo[1]) * 60 + parseInt(tempo[2])
+            avg.testsPausesTime += parseInt(tempoPausas[0]) * 3600 + parseInt(tempoPausas[1]) * 60 + parseInt(tempoPausas[2])
+
+            countEval++;
+        })
+    })
+
+    avg.testsTime = avg.testsTime / countEval;
+    avg.testsPausesTime = avg.testsPausesTime / countEval;
+
+    // Convert avg.testsTime and avg.testsPausesTime to hh:mm:ss
+    avg.testsTime = secondsToHms(avg.testsTime);
+    avg.testsPausesTime = secondsToHms(avg.testsPausesTime);
+
+    let rawContentData = []
+
+    user_content_views.forEach((e) => {
+        let index = rawContentData.findIndex((f) => f.content_title == e.content_title)
+        if (index == -1) {
+            rawContentData.push({
+                content_title: e.content_title,
+                totalReadingTime: 0, //
+                avgReadingTime: 0,
+                totalPauses: 0, //
+                avgPauses: 0,
+                totalPausesTime: 0, //
+                avgPauseTime: 0,
+                count: 0
+            })
+            index = rawContentData.length - 1
+        }
+
+        rawContentData[index].count++
+        rawContentData[index].totalReadingTime += parseInt(e.data.tempo.split(':')[0]) * 3600 + parseInt(e.data.tempo.split(':')[1]) * 60 + parseInt(e.data.tempo.split(':')[2])
+        rawContentData[index].totalPauses += parseInt(e.data.pausas)
+        rawContentData[index].totalPausesTime += parseInt(e.data.tempoPausas.split(':')[0]) * 3600 + parseInt(e.data.tempoPausas.split(':')[1]) * 60 + parseInt(e.data.tempoPausas.split(':')[2])
+    })
+
+    rawContentData.forEach((e) => {
+        e.avgReadingTime = e.totalReadingTime / e.count
+        e.avgPauseTime = e.totalPausesTime / e.count
+        e.avgPauses = e.totalPauses / e.count
+
+        e.totalReadingTime = secondsToHms(e.totalReadingTime)
+        e.totalPausesTime = secondsToHms(e.totalPausesTime)
+        e.avgReadingTime = secondsToHms(e.avgReadingTime)
+        e.avgPauseTime = secondsToHms(e.avgPauseTime)
+    })
+
+    let rawQuestionData = false
+
+    sql = 'SELECT username FROM users WHERE id = ?'
+    let username = await global.db(sql, [id])
+
+    res.render(path.join(__dirname, '..', 'views', 'teacher', 'stat.ejs'), { avg, rawContentData, rawQuestionData, module, user: req.session.user, username: username[0].username })
+
+
 })
 
 module.exports = router

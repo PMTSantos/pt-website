@@ -11,6 +11,7 @@ var speakeasy = require("speakeasy");
 var qrcode = require("qrcode");
 
 const bcrypt = require('bcrypt');
+const { get } = require('http');
 const saltRounds = 10;
 
 const app = express();
@@ -83,7 +84,8 @@ function authRole(role) {
 }
 
 function restrict(req, res, next) {
-    if (req.session.user && (req.session.user.tfaL == true || req.originalUrl.includes('2fa'))) {
+
+    if( req.session.user && ((req.session.user.tfaL == true || req.originalUrl.includes('2fa')) || req.session.user.tfa == null) ) {
         next();
     } else {
         let error = `Acesso negado!`
@@ -104,24 +106,23 @@ app.use(function (req, res, next) {
     delete req.session.error;
     delete req.session.success;
     res.locals.message = '';
-    if (err) res.locals.message = `
-    <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <h6><i class="fas fa-ban"></i><b> Erro!</b></h6>
-        ${err}
-    </div>`;
 
-    if (msg) res.locals.message = `
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h6><i class="fas fa-check"></i><b> Sucesso!</b></h6>
-            ${msg}
-        </div>
-    `;
+    function getMessage(msg, type) {
+        return `<div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div id="notification_toast" class="toast align-items-center border-0 text-bg-${type}" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body">
+                ${msg}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    if (err) res.locals.message = getMessage(err, 'danger');
+    if (msg) res.locals.message = getMessage(msg, 'success');
+
     next();
 });
 
