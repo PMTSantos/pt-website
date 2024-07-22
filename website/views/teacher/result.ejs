@@ -119,12 +119,6 @@
 <script>
     $(document).ready(function () {
         //
-        $('#dataTableHover').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
-            },
-        });
-        //
         $('#changeGrade').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('id');
@@ -136,9 +130,23 @@
                 modal.find('#grade').val(grade)
                 modal.find('#usernameSpan').text(username)
 
-        })
+        })    
+  });
 
-        
+  new DataTable('#dataTableHover', {
+  layout: {
+    bottomStart: {
+      buttons: [
+        {extend: 'copy', className: 'bg-primary'},
+        {extend: 'excel', className: 'btn-success'},
+        {extend: 'pdf', className: 'btn-danger'},
+        {extend: 'csv', className: 'btn-secondary'}
+    ],
+    }
+  },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+    },
 });
 </script>
 

@@ -128,9 +128,11 @@
   <script>
 
     let notification = document.getElementById('notification_toast');
-    const notifyBootstrap = bootstrap.Toast.getOrCreateInstance(notification)
-    notifyBootstrap.show()
-
+    if (notification) {
+      const notifyBootstrap = bootstrap.Toast.getOrCreateInstance(notification)
+      notifyBootstrap.show()
+    }
+    
    function getQrCode() {
       fetch('/getQRCode', {
         method: 'get',

@@ -181,7 +181,7 @@
       <% if(rawQuestionData.length > 0) { %>
         <div class="table-responsive p-3">
 
-        <table class="table align-items-center table-flush table-hover" id="dataTableHover">
+        <table class="table align-items-center table-flush table-hover" id="dataTableHover2">
           <thead class="thead-light">
             <tr>
               <th>Pergunta</th>
@@ -241,13 +241,46 @@
 
 <script src="/static/dash/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/dash/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
+
 
 <!-- Page level custom scripts -->
 <script>
-    $('#dataTableHover').DataTable({
+    /*$('#dataTableHover').DataTable({
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
         },
-    });
+    });*/
+
+    new DataTable('#dataTableHover', {
+  layout: {
+    bottomStart: {
+      buttons: [
+        {extend: 'copy', className: 'bg-primary'},
+        {extend: 'excel', className: 'btn-success'},
+        {extend: 'pdf', className: 'btn-danger'},
+        {extend: 'csv', className: 'btn-secondary'}
+    ],
+    }
+  },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+    },
+});
+
+new DataTable('#dataTableHover2', {
+  layout: {
+    bottomStart: {
+      buttons: [
+        {extend: 'copy', className: 'bg-primary'},
+        {extend: 'excel', className: 'btn-success'},
+        {extend: 'pdf', className: 'btn-danger'},
+        {extend: 'csv', className: 'btn-secondary'}
+    ],
+    }
+  },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+    },
+});
+
 </script>
